@@ -36,6 +36,14 @@ function buildPriceLinks(fragrance) {
     url: `https://www.amazon.com/s?k=${query}&tag=spritzfind-20`,
   });
 
+  // eBay search link
+  prices.push({
+    store: "eBay",
+    storeId: "ebay",
+    price: "Check Price",
+    url: `https://www.ebay.com/sch/i.html?_nkw=${query}&_sacat=180345`,
+  });
+
   // Sephora search link
   prices.push({
     store: "Sephora",
@@ -66,6 +74,22 @@ function buildPriceLinks(fragrance) {
     storeId: "fragrancenet",
     price: "Check Price",
     url: `https://www.fragrancenet.com/search?q=${query}`,
+  });
+
+  // Nordstrom search link
+  prices.push({
+    store: "Nordstrom",
+    storeId: "nordstrom",
+    price: "Check Price",
+    url: `https://www.nordstrom.com/sr?keyword=${query}`,
+  });
+
+  // Macy's search link
+  prices.push({
+    store: "Macy's",
+    storeId: "macys",
+    price: "Check Price",
+    url: `https://www.macys.com/shop/featured/${query}`,
   });
 
   return prices;
