@@ -45,7 +45,7 @@
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --bg: #faf8f5;
+      --bg: #ffffff;
       --surface: #ffffff;
       --border: #e8e2d9;
       --accent: #5b9bd5;
@@ -58,7 +58,7 @@
       --warm: #7db8e0;
       --rose: #c97b84;
       --light-blue: #e8f1fa;
-      --hero-gradient: linear-gradient(135deg, #faf8f5 0%, #e8f1fa 50%, #faf8f5 100%);
+      --hero-gradient: linear-gradient(135deg, #ffffff 0%, #e8f1fa 50%, #ffffff 100%);
     }
     body { background: var(--bg); color: var(--text); font-family: 'Outfit', sans-serif; min-height: 100vh; overflow-x: hidden; font-weight: 400; }
 
@@ -76,7 +76,7 @@
     .page { animation: fadeIn 0.2s ease; }
 
     /* ===== NAV ===== */
-    .nav { border-bottom: 1px solid var(--border); padding: 0 40px; display: flex; align-items: stretch; justify-content: space-between; position: sticky; top: 0; z-index: 50; background: rgba(250,248,245,0.97); backdrop-filter: blur(12px); height: 64px; }
+    .nav { border-bottom: 1px solid var(--border); padding: 0 40px; display: flex; align-items: stretch; justify-content: space-between; position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); height: 64px; }
     .nav-left { display: flex; align-items: center; }
     .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 500; padding-right: 32px; border-right: 1px solid var(--border); display: flex; align-items: center; cursor: pointer; letter-spacing: 2px; }
     .nav-logo .spritz { color: var(--text); }
@@ -129,7 +129,7 @@
     .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--accent), var(--warm)); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; z-index: 2; }
     .card:hover { box-shadow: 0 6px 30px rgba(0,0,0,0.08); transform: translateY(-2px); }
     .card:hover::before { transform: scaleX(1); }
-    .card-img-wrap { width: 100%; height: 220px; background: linear-gradient(135deg, #f8f9fc, #e8f1fa); overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; }
+    .card-img-wrap { width: 100%; height: 220px; background: linear-gradient(135deg, #f7f9fc, #e8f1fa); overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; }
     .card-img { width: 100%; height: 100%; object-fit: contain; padding: 24px; transition: transform 0.35s ease; }
     .card:hover .card-img { transform: scale(1.05); }
     .card-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 4rem; color: #e0d5c0; }
@@ -170,7 +170,7 @@
     /* ===== LOADING ===== */
     .loading-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
     .loading-card { background: var(--card); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; animation: shimmer 1.5s ease-in-out infinite; }
-    .loading-img { width: 100%; height: 220px; background: linear-gradient(135deg, #f0f4f8, #e0eaf4); }
+    .loading-img { width: 100%; height: 220px; background: linear-gradient(135deg, #f5f7fa, #e0eaf4); }
     .loading-body { padding: 20px; }
     .skeleton { background: var(--border); border-radius: 4px; margin-bottom: 12px; }
     .empty-state { text-align: center; padding: 80px 40px; color: var(--muted); font-size: 0.8rem; letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
@@ -273,7 +273,7 @@
 <body>
 <div id="root"></div>
 <noscript>
-<div style="max-width:900px;margin:0 auto;padding:40px 20px;font-family:sans-serif;color:#1a1a1a;background:#faf8f5">
+<div style="max-width:900px;margin:0 auto;padding:40px 20px;font-family:sans-serif;color:#1a1a1a;background:#ffffff">
   <h1>SpritzFind — Compare Fragrance Prices Across Sephora, Ulta & More</h1>
   <p>Search once, compare everywhere. SpritzFind is a free fragrance price comparison tool that lets you find the best deals on colognes, perfumes, and body sprays across Sephora, Ulta, Amazon, FragranceX, FragranceNet, and more retailers.</p>
   <h2>Features</h2>
