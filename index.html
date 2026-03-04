@@ -327,43 +327,60 @@ const ALL_SOURCES = [
 
 const BRAND_FILTERS = [
   {label: "ALL", query: ""},
-  {label: "---", group: "div1"},
+  // === TIER 1: Affordable ($20–$80) ===
+  {label: "💲 AFFORDABLE — Under $80", tier: true},
+  {label: "VERSACE", query: "Versace fragrance"},
+  {label: "DOLCE & GABBANA", query: "Dolce Gabbana fragrance"},
+  {label: "CALVIN KLEIN", query: "Calvin Klein fragrance"},
+  {label: "NAUTICA", query: "Nautica fragrance"},
+  {label: "DAVIDOFF", query: "Davidoff fragrance"},
+  {label: "MONT BLANC", query: "Mont Blanc fragrance"},
+  {label: "RALPH LAUREN", query: "Ralph Lauren fragrance"},
+  {label: "HUGO BOSS", query: "Hugo Boss fragrance"},
+  {label: "COACH", query: "Coach fragrance"},
+  {label: "GUESS", query: "Guess fragrance"},
+  {label: "TOMMY HILFIGER", query: "Tommy Hilfiger fragrance"},
+  {label: "ELIZABETH ARDEN", query: "Elizabeth Arden fragrance"},
+  {label: "CLEAN", query: "Clean Reserve fragrance"},
+  {label: "AZZARO", query: "Azzaro fragrance"},
+  {label: "PERRY ELLIS", query: "Perry Ellis fragrance"},
+  {label: "KENNETH COLE", query: "Kenneth Cole fragrance"},
+  // === TIER 2: Designer ($80–$200) ===
+  {label: "💎 DESIGNER — $80 to $200", tier: true},
   {label: "DIOR", query: "Dior fragrance"},
   {label: "CHANEL", query: "Chanel fragrance"},
-  {label: "TOM FORD", query: "Tom Ford fragrance"},
   {label: "YSL", query: "Yves Saint Laurent fragrance"},
-  {label: "VERSACE", query: "Versace fragrance"},
-  {label: "CREED", query: "Creed fragrance"},
-  {label: "LE LABO", query: "Le Labo fragrance"},
-  {label: "JO MALONE", query: "Jo Malone"},
-  {label: "---", group: "div2"},
   {label: "GUCCI", query: "Gucci fragrance"},
   {label: "PRADA", query: "Prada fragrance"},
-  {label: "BURBERRY", query: "Burberry fragrance"},
-  {label: "DOLCE & GABBANA", query: "Dolce Gabbana fragrance"},
   {label: "ARMANI", query: "Armani fragrance"},
+  {label: "BURBERRY", query: "Burberry fragrance"},
   {label: "VALENTINO", query: "Valentino fragrance"},
   {label: "CAROLINA HERRERA", query: "Carolina Herrera fragrance"},
   {label: "GIVENCHY", query: "Givenchy fragrance"},
-  {label: "---", group: "div3"},
+  {label: "MARC JACOBS", query: "Marc Jacobs fragrance"},
+  {label: "HERMES", query: "Hermes fragrance"},
+  {label: "ISSEY MIYAKE", query: "Issey Miyake fragrance"},
+  {label: "JO MALONE", query: "Jo Malone"},
   {label: "MAISON MARGIELA", query: "Maison Margiela Replica"},
+  {label: "JEAN PAUL GAULTIER", query: "Jean Paul Gaultier fragrance"},
+  // === TIER 3: Luxury & Niche ($200+) ===
+  {label: "👑 LUXURY & NICHE — $200+", tier: true},
+  {label: "TOM FORD", query: "Tom Ford fragrance"},
+  {label: "CREED", query: "Creed fragrance"},
   {label: "MFK", query: "Maison Francis Kurkdjian"},
+  {label: "LE LABO", query: "Le Labo fragrance"},
   {label: "BYREDO", query: "Byredo fragrance"},
-  {label: "DIPTYQUE", query: "Diptyque fragrance"},
-  {label: "INITIO", query: "Initio Parfums"},
   {label: "PARFUMS DE MARLY", query: "Parfums de Marly"},
+  {label: "INITIO", query: "Initio Parfums"},
   {label: "XERJOFF", query: "Xerjoff fragrance"},
   {label: "AMOUAGE", query: "Amouage fragrance"},
-  {label: "---", group: "div4"},
-  {label: "ACQUA DI GIO", query: "Acqua di Gio"},
-  {label: "SAUVAGE", query: "Dior Sauvage"},
-  {label: "BLEU DE CHANEL", query: "Bleu de Chanel"},
-  {label: "AVENTUS", query: "Creed Aventus"},
-  {label: "BACCARAT ROUGE", query: "Baccarat Rouge 540"},
-  {label: "OUD WOOD", query: "Tom Ford Oud Wood"},
-  {label: "SANTAL 33", query: "Le Labo Santal 33"},
-  {label: "EROS", query: "Versace Eros"},
-  {label: "LIGHT BLUE", query: "Dolce Gabbana Light Blue"},
+  {label: "DIPTYQUE", query: "Diptyque fragrance"},
+  {label: "KILIAN", query: "Kilian fragrance"},
+  {label: "ROJA DOVE", query: "Roja Dove fragrance"},
+  {label: "FREDERIC MALLE", query: "Frederic Malle fragrance"},
+  {label: "CLIVE CHRISTIAN", query: "Clive Christian fragrance"},
+  {label: "NISHANE", query: "Nishane fragrance"},
+  {label: "TIZIANA TERENZI", query: "Tiziana Terenzi fragrance"},
 ];
 
 const DEFAULT_DROPS = [
@@ -687,8 +704,8 @@ function renderFindPage() {
     <div style="text-align:center;margin-top:16px;margin-bottom:8px;font-size:0.65rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--accent)">Browse by Brand & Scent</div>
     <div class="filters">
       ${BRAND_FILTERS.map((cat,idx) =>
-        cat.label === "---"
-        ? `<div style="width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:4px 0;opacity:0.3"></div>`
+        cat.tier
+        ? `<div style="width:100%;margin:10px 0 6px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.65rem;font-weight:600;letter-spacing:2px;color:var(--accent-gold);text-align:left">${esc(cat.label)}</div>`
         : `<button class="filter-btn ${activeCategory===cat.label?"active":""}" data-action="category" data-idx="${idx}">${esc(cat.label)}</button>`
       ).join("")}
     </div>
@@ -837,8 +854,8 @@ async function doSearch(q) {
   try {
     const action = q && q.trim() ? "search" : "trending";
     const payload = q && q.trim()
-      ? { action: "search", query: q, limit: 30 }
-      : { action: "trending", limit: 30 };
+      ? { action: "search", query: q, limit: 50 }
+      : { action: "trending", limit: 50 };
 
     const res = await fetch(API_URL, {
       method: "POST",
