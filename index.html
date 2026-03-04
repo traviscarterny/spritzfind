@@ -823,6 +823,8 @@ document.addEventListener("click", function(e) {
 });
 
 // ===== ASYNC ACTIONS =====
+const API_URL = "/.netlify/functions/fragella";
+
 async function doSearch(q) {
   dropsLoading = true;
   dropsError = null;
@@ -832,20 +834,34 @@ async function doSearch(q) {
   lastQuery = q || "__all__";
   render();
 
-  // For now, filter default drops by query — replace with real API later
-  await new Promise(r => setTimeout(r, 600)); // Simulate loading
+  try {
+    const action = q && q.trim() ? "search" : "trending";
+    const payload = q && q.trim()
+      ? { action: "search", query: q, limit: 30 }
+      : { action: "trending", limit: 30 };
 
-  if (q && q.trim()) {
-    const lower = q.toLowerCase();
-    const results = DEFAULT_DROPS.filter(d =>
-      d.name.toLowerCase().includes(lower) ||
-      d.brand.toLowerCase().includes(lower) ||
-      (d.notes && d.notes.toLowerCase().includes(lower))
-    );
-    drops = results.length > 0 ? results : DEFAULT_DROPS;
-    if (results.length === 0) dropsError = `No exact matches for "${q}". Showing featured fragrances.`;
-  } else {
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const json = await res.json();
+
+    if (json.error) {
+      console.error("[SPRITZFIND] API error:", json.error);
+      drops = DEFAULT_DROPS;
+      dropsError = "Search unavailable. Showing featured fragrances.";
+    } else if (json.data && json.data.length > 0) {
+      drops = json.data;
+      steps = [{label:"Searching retailers",status:"done",count:json.data.length}];
+    } else {
+      drops = DEFAULT_DROPS;
+      dropsError = `No results for "${q}". Showing featured fragrances.`;
+    }
+  } catch(e) {
+    console.error("[SPRITZFIND] Fetch error:", e);
     drops = DEFAULT_DROPS;
+    dropsError = "Search unavailable. Showing featured fragrances.";
   }
 
   dropsLoading = false;

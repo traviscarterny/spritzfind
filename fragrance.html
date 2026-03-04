@@ -306,29 +306,78 @@ function render(){
   if(hb)hb.addEventListener("click",()=>{mobileMenuOpen=!mobileMenuOpen;render()});
 }
 
-// Load fragrance — for now uses sample data, replace with API
-function loadFragrance(){
+const API_URL = "/.netlify/functions/fragella";
+
+// Load fragrance from Fragella API
+async function loadFragrance(){
   if(!fragSlug){loading=false;error=true;render();return}
-  const target=fragSlug.toLowerCase();
-  let best=null;let bestScore=-1;
-  SAMPLE_FRAGRANCES.forEach(f=>{
-    const fSlug=nameToSlug(f.name);
-    if(fSlug===target){best=f;bestScore=1000;return}
-    const tw=target.split("-");const fw=fSlug.split("-");
-    let mc=0;tw.forEach(w=>{if(fw.includes(w))mc++});
-    const score=mc/Math.max(tw.length,1);
-    if(score>bestScore){bestScore=score;best=f}
-  });
-  if(best&&bestScore>=0.3){
-    fragrance=best;
-    related=SAMPLE_FRAGRANCES.filter(f=>f!==best).slice(0,4);
-    updateMeta(fragrance);
-  }else{error=true}
-  loading=false;render();
+  const query=slugToQuery(fragSlug);
+  console.log("[SPRITZFIND] Loading fragrance:",fragSlug,"→ query:",query);
+
+  try {
+    // Search for the fragrance
+    const res=await fetch(API_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({action:"search",query:query,limit:10}),
+    });
+    const json=await res.json();
+
+    if(json.error||!json.data||json.data.length===0){
+      // Fallback to sample data
+      const target=fragSlug.toLowerCase();
+      let best=null;let bestScore=-1;
+      SAMPLE_FRAGRANCES.forEach(f=>{
+        const fSlug=nameToSlug(f.name);
+        if(fSlug===target){best=f;bestScore=1000;return}
+        const tw=target.split("-");const fw=fSlug.split("-");
+        let mc=0;tw.forEach(w=>{if(fw.includes(w))mc++});
+        const score=mc/Math.max(tw.length,1);
+        if(score>bestScore){bestScore=score;best=f}
+      });
+      if(best&&bestScore>=0.3){fragrance=best;related=SAMPLE_FRAGRANCES.filter(f=>f!==best).slice(0,4);updateMeta(fragrance)}
+      else{error=true}
+      loading=false;render();return;
+    }
+
+    // Find best match from API results
+    const target=fragSlug.toLowerCase();
+    let best=null;let bestScore=-1;
+    json.data.forEach(d=>{
+      const dSlug=nameToSlug(d.name);
+      if(dSlug===target){best=d;bestScore=1000;return}
+      const tw=target.split("-");const dw=dSlug.split("-");
+      let mc=0;tw.forEach(w=>{if(dw.includes(w))mc++});
+      const score=mc/Math.max(tw.length,1);
+      if(score>bestScore){bestScore=score;best=d}
+    });
+
+    if(best&&bestScore>=0.3){
+      fragrance=best;
+      related=json.data.filter(d=>d!==best).slice(0,4);
+      updateMeta(fragrance);
+
+      // Also fetch similar fragrances
+      try{
+        const simRes=await fetch(API_URL,{
+          method:"POST",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({action:"similar",name:best.name,limit:4}),
+        });
+        const simJson=await simRes.json();
+        if(simJson.data&&simJson.data.length>0){related=simJson.data.slice(0,4)}
+      }catch(e){console.log("[SPRITZFIND] Similar fetch failed, using search results")}
+    }else{error=true}
+
+    loading=false;render();
+  }catch(err){
+    console.error("[SPRITZFIND] Load error:",err);
+    loading=false;error=true;render();
+  }
 }
 
 render();
-setTimeout(loadFragrance,300);
+loadFragrance();
 </script>
 </body>
 </html>
