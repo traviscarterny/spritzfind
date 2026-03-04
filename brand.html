@@ -164,7 +164,7 @@ const API_URL="/.netlify/functions/fragella";
     const res=await fetch(API_URL,{
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({action:"brand",brand:brandName,limit:30}),
+      body:JSON.stringify({action:"brand",brand:brandName,limit:50}),
     });
     const json=await res.json();
 
