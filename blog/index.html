@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SpritzFind Blog — Fragrance Guides, Deals & Reviews</title>
+<meta name="description" content="Fragrance buying guides, price comparisons, seasonal recommendations, and expert reviews. Save money on colognes and perfumes."/>
+<meta name="robots" content="index, follow"/>
+<link rel="canonical" href="https://www.spritzfind.com/blog"/>
+<meta property="og:type" content="website"/>
+<meta property="og:site_name" content="SpritzFind"/>
+<meta property="og:title" content="SpritzFind Blog — Fragrance Guides, Deals & Reviews"/>
+<meta property="og:description" content="Fragrance buying guides, price comparisons, seasonal recommendations, and expert reviews."/>
+<meta property="og:url" content="https://www.spritzfind.com/blog"/>
+<meta property="og:image" content="https://www.spritzfind.com/og-image.png"/>
+<meta property="og:image:width" content="1200"/><meta property="og:image:height" content="630"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="SpritzFind Blog — Fragrance Guides, Deals & Reviews"/>
+<meta name="twitter:description" content="Fragrance buying guides, price comparisons, seasonal recommendations, and expert reviews."/>
+<meta name="twitter:image" content="https://www.spritzfind.com/og-image.png"/>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f0f5fb'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Georgia,serif' font-weight='700' font-size='28' fill='%235b9bd5'%3ESF%3C/text%3E%3C/svg%3E"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=GFS+Didot&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Blog","name":"SpritzFind Blog","description":"Fragrance buying guides, price comparisons, and expert recommendations.","url":"https://www.spritzfind.com/blog","publisher":{"@type":"Organization","name":"SpritzFind","url":"https://www.spritzfind.com"}}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#ffffff;--border:#e8e2d9;--accent:#5b9bd5;--accent-gold:#b8860b;--text:#1a1a1a;--muted:#8a8078}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;font-size:15px;line-height:1.8}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:24px 20px 80px}
+
+.nav{border-bottom:1px solid var(--border);padding:0 40px;display:flex;align-items:stretch;justify-content:space-between;position:sticky;top:0;z-index:50;background:rgba(255,255,255,0.97);backdrop-filter:blur(12px);height:64px}
+.nav-left{display:flex;align-items:center}
+.nav-logo{font-family:'GFS Didot',serif;font-size:1.6rem;font-weight:400;letter-spacing:3px;padding-right:32px;border-right:1px solid var(--border);display:flex;align-items:center;text-decoration:none}
+.nav-logo .spritz{color:var(--text)}.nav-logo .find{color:var(--accent)}
+.nav-tabs{display:flex;align-items:stretch}
+.nav-tab{display:flex;align-items:center;padding:0 22px;font-size:.7rem;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);transition:all .15s;border-right:1px solid var(--border);border-bottom:2px solid transparent;text-decoration:none}
+.nav-tab:hover{color:var(--text);text-decoration:none}
+.nav-tab.active{color:var(--text);border-bottom-color:var(--accent)}
+.hamburger{display:none;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--text);padding:8px}
+
+h1{font-family:'GFS Didot',serif;font-size:clamp(2.5rem,6vw,4rem);line-height:1;letter-spacing:1px;margin:48px 0 8px}
+h1 .accent{color:var(--accent)}
+.subtitle{font-size:.82rem;color:var(--muted);margin-bottom:48px}
+
+.posts-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.post-card{background:var(--bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:all .25s}
+.post-card:hover{border-color:var(--accent);transform:translateY(-3px);box-shadow:0 6px 24px rgba(0,0,0,.06)}
+.post-card a{color:var(--text);text-decoration:none;display:block}
+.post-card-img{width:100%;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f7f9fc,#e8f1fa);border-bottom:1px solid var(--border);font-family:'GFS Didot',serif;font-size:2rem;color:#c0cdd8}
+.post-card-body{padding:20px}
+.post-card-body h2{font-family:'GFS Didot',serif;font-size:1.2rem;letter-spacing:.5px;margin-bottom:8px;line-height:1.3}
+.post-card-body p{color:var(--muted);font-size:.78rem;margin-bottom:14px;line-height:1.6}
+.post-card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.tag{display:inline-block;font-size:.55rem;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(91,155,213,.3);padding:3px 10px;border-radius:3px}
+
+.footer-blog{border-top:1px solid var(--border);margin-top:60px;padding-top:24px;font-size:.65rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center}
+
+@media(max-width:768px){
+  .nav{padding:0 16px}.nav-tabs{display:none}.hamburger{display:block}
+  .wrap{padding:16px 14px 60px}
+}
+@media(max-width:640px){
+  h1{font-size:2.5rem}.posts-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-left">
+  <a class="nav-logo" href="/"><span class="spritz">Spritz</span><span class="find">Find</span></a>
+  <div class="nav-tabs">
+    <a class="nav-tab" href="/">Find Deals</a>
+    <a class="nav-tab" href="/releases">New Releases</a>
+    <a class="nav-tab" href="/deals">Deals</a>
+    <a class="nav-tab active" href="/blog">Blog</a>
+  </div>
+  <button class="hamburger" onclick="document.querySelector('.mobile-nav')?.classList.toggle('show')">☰</button>
+</div></nav>
+
+<div class="wrap">
+<h1>The <span class="accent">SpritzFind</span> Blog</h1>
+<div class="subtitle">Fragrance guides, price breakdowns, seasonal picks, and expert reviews.</div>
+
+<div class="posts-grid">
+  <div class="post-card"><a href="/blog/best-colognes-under-50">
+    <div class="post-card-img">$50</div>
+    <div class="post-card-body">
+      <div class="post-card-tags"><span class="tag">Budget</span><span class="tag">Guide</span></div>
+      <h2>Best Colognes Under $50 in 2026</h2>
+      <p>You don't need to spend hundreds for a great scent. These 12 fragrances punch well above their price point.</p>
+    </div>
+  </a></div>
+
+  <div class="post-card"><a href="/blog/dior-sauvage-vs-bleu-de-chanel">
+    <div class="post-card-img">VS</div>
+    <div class="post-card-body">
+      <div class="post-card-tags"><span class="tag">Comparison</span><span class="tag">Designer</span></div>
+      <h2>Dior Sauvage vs Bleu de Chanel: Which Is Better?</h2>
+      <p>The two best-selling men's fragrances go head to head. We compare notes, longevity, price, and versatility.</p>
+    </div>
+  </a></div>
+
+  <div class="post-card"><a href="/blog/where-to-buy-discount-perfume">
+    <div class="post-card-img">💰</div>
+    <div class="post-card-body">
+      <div class="post-card-tags"><span class="tag">Deals</span><span class="tag">Guide</span></div>
+      <h2>Where to Buy Discount Perfume Online (Legit Sites)</h2>
+      <p>FragranceX, FragranceNet, Amazon — which discount sites are trustworthy and where do the savings come from?</p>
+    </div>
+  </a></div>
+
+  <div class="post-card"><a href="/blog/best-fall-fragrances-2026">
+    <div class="post-card-img">🍂</div>
+    <div class="post-card-body">
+      <div class="post-card-tags"><span class="tag">Seasonal</span><span class="tag">Picks</span></div>
+      <h2>Best Fall Fragrances 2026: Warm, Spicy & Cozy</h2>
+      <p>As temperatures drop, your scent should evolve. Here are the best amber, oud, and spice-forward picks for autumn.</p>
+    </div>
+  </a></div>
+
+  <div class="post-card"><a href="/blog/fragrance-price-comparison-guide">
+    <div class="post-card-img">📊</div>
+    <div class="post-card-body">
+      <div class="post-card-tags"><span class="tag">Price</span><span class="tag">Analysis</span></div>
+      <h2>Sephora vs Ulta vs Amazon: Where's the Best Price?</h2>
+      <p>We compared prices on 50 popular fragrances across 7 retailers. Here's who wins — and by how much.</p>
+    </div>
+  </a></div>
+
+  <div class="post-card"><a href="/blog/best-niche-fragrances-beginners">
+    <div class="post-card-img">✨</div>
+    <div class="post-card-body">
+      <div class="post-card-tags"><span class="tag">Niche</span><span class="tag">Beginner</span></div>
+      <h2>Best Niche Fragrances for Beginners</h2>
+      <p>Ready to graduate from designer? These accessible niche scents are worth every penny of the upgrade.</p>
+    </div>
+  </a></div>
+
+  <div class="post-card"><a href="/blog/creed-aventus-dupes">
+    <div class="post-card-img">🧪</div>
+    <div class="post-card-body">
+      <div class="post-card-tags"><span class="tag">Dupes</span><span class="tag">Savings</span></div>
+      <h2>Best Creed Aventus Dupes Under $40</h2>
+      <p>Don't want to pay $445? These impressions and clones capture 90% of Aventus at a fraction of the cost.</p>
+    </div>
+  </a></div>
+
+  <div class="post-card"><a href="/blog/how-to-make-cologne-last-longer">
+    <div class="post-card-img">⏱</div>
+    <div class="post-card-body">
+      <div class="post-card-tags"><span class="tag">Tips</span><span class="tag">How-To</span></div>
+      <h2>How to Make Your Cologne Last All Day</h2>
+      <p>Pulse points aren't enough. These 7 science-backed tricks will double your fragrance longevity.</p>
+    </div>
+  </a></div>
+</div>
+
+<div class="footer-blog">© 2026 SpritzFind — Compare. Discover. Save.</div>
+</div>
+</body>
+</html>
