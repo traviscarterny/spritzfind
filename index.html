@@ -165,6 +165,8 @@
     .price-row-amount { font-size: 0.8rem; font-weight: 700; color: var(--green); min-width: 52px; text-align: right; }
     .price-row-btn { font-family: 'Outfit', sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 4px 12px; cursor: pointer; transition: all 0.15s; white-space: nowrap; text-decoration: none; display: inline-block; border-radius: 3px; }
     .price-row-btn:hover { background: var(--accent-gold); color: #fff; }
+    .price-toggle { width: 100%; background: none; border: 1px dashed var(--border); color: var(--accent); font-family: 'Outfit', sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 6px; cursor: pointer; transition: all 0.15s; border-radius: 3px; margin-top: 4px; }
+    .price-toggle:hover { border-color: var(--accent); background: rgba(91,155,213,0.05); }
 
     /* ===== LOADING ===== */
     .loading-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
@@ -290,6 +292,7 @@
 // ===== AFFILIATE CONFIG =====
 const AFFILIATE = {
   amazon:       { tag: "spritzfind-20",        param: "tag" },
+  ebay:         { tag: "YOUR_EBAY_CODE",       param: "campid" },
   sephora:      { tag: "YOUR_SEPHORA_CODE",    param: "om_mmc" },
   ulta:         { tag: "YOUR_ULTA_CODE",       param: "AID" },
   fragrancex:   { tag: "YOUR_FX_CODE",         param: "ref" },
@@ -647,7 +650,7 @@ function renderDropImage(drop) {
 }
 
 // --- Price Compare ---
-function renderPriceCompare(prices, drop) {
+function renderPriceCompare(prices, drop, cardIdx) {
   if (!prices || prices.length === 0) return "";
   const sorted = [...prices].sort((a,b) => {
     const pa = parseFloat(a.price.replace(/[^0-9.]/g,''));
@@ -656,16 +659,29 @@ function renderPriceCompare(prices, drop) {
     if (isNaN(pb)) return -1;
     return pa - pb;
   });
+  const SHOW_INITIAL = 3;
+  const hasMore = sorted.length > SHOW_INITIAL;
+  const uid = `prices-${cardIdx}`;
   return `<div class="price-compare">
-    <div class="price-compare-label">${prices.length > 1 ? "Compare Prices" : "Best Price"}</div>
+    <div class="price-compare-label">${sorted.length} ${sorted.length === 1 ? "Store" : "Stores"}</div>
     <div class="price-compare-rows">
-      ${sorted.map((p,i) => `<div class="price-row">
+      ${sorted.slice(0, SHOW_INITIAL).map((p,i) => `<div class="price-row">
         <span class="price-row-store">${esc(p.store)}</span>
         <span class="price-row-amount"${i===0?' style="color:var(--green);font-weight:800"':''}>${esc(p.price)}</span>
         <a href="${esc(affLink(p.url,p.storeId))}" target="_blank" rel="noopener noreferrer"
           class="price-row-btn"
           onclick="event.stopPropagation();trackClick(${JSON.stringify({name:drop.name})},'${esc(p.storeId)}')">Buy</a>
       </div>`).join("")}
+      ${hasMore ? `<div id="${uid}" style="display:none">
+        ${sorted.slice(SHOW_INITIAL).map((p,i) => `<div class="price-row">
+          <span class="price-row-store">${esc(p.store)}</span>
+          <span class="price-row-amount">${esc(p.price)}</span>
+          <a href="${esc(affLink(p.url,p.storeId))}" target="_blank" rel="noopener noreferrer"
+            class="price-row-btn"
+            onclick="event.stopPropagation();trackClick(${JSON.stringify({name:drop.name})},'${esc(p.storeId)}')">Buy</a>
+        </div>`).join("")}
+      </div>
+      <button class="price-toggle" data-target="${uid}" onclick="event.stopPropagation();var el=document.getElementById('${uid}');if(el.style.display==='none'){el.style.display='block';this.textContent='Show less';}else{el.style.display='none';this.textContent='+ ${sorted.length - SHOW_INITIAL} more stores';}">+ ${sorted.length - SHOW_INITIAL} more stores</button>` : ""}
     </div>
   </div>`;
 }
@@ -684,7 +700,7 @@ function renderDropCard(drop, i) {
         <div class="meta-row"><span class="meta-label">Retail</span><span class="price">${esc(drop.retail||"—")}</span></div>
       </div>
       ${drop.popularity ? `<div class="pop-bar"><div class="pop-fill" style="width:${drop.popularity}%"></div></div><div class="pop-label"><span>Popularity</span><span>${drop.popularity}/100</span></div>` : ""}
-      ${renderPriceCompare(drop.prices, drop)}
+      ${renderPriceCompare(drop.prices, drop, i)}
     </div>
   </div>`;
 }
