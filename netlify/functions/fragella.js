@@ -165,20 +165,57 @@ exports.handler = async function (event) {
     return { statusCode: 400, headers: HEADERS, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
-  const { action, query, brand, name, limit = 20 } = body;
+  const { action, query, brand, name, limit = 50 } = body;
 
   try {
     let data;
 
     if (action === "search" && query) {
-      // Fuzzy search fragrances
+      // Fuzzy search fragrances — try to get full limit
       const raw = await callFragella("/fragrances", { search: query, limit });
-      data = (Array.isArray(raw) ? raw : []).map(formatFragrance);
+      let results = Array.isArray(raw) ? raw : [];
+      
+      // If API returned fewer than requested and we got exactly 20, it might be capped
+      // Try a second search with a slightly different query to get more
+      if (results.length > 0 && results.length < limit && results.length === 20) {
+        try {
+          const raw2 = await callFragella("/fragrances", { search: query + " eau", limit: 30 });
+          const items2 = Array.isArray(raw2) ? raw2 : [];
+          const seen = new Set(results.map(r => (r.Name || "").toLowerCase()));
+          for (const item of items2) {
+            if (!seen.has((item.Name || "").toLowerCase())) {
+              results.push(item);
+              seen.add((item.Name || "").toLowerCase());
+            }
+            if (results.length >= limit) break;
+          }
+        } catch (e) { /* ignore supplemental search failure */ }
+      }
+      
+      data = results.map(formatFragrance);
 
     } else if (action === "brand" && brand) {
       // Get all fragrances for a brand
       const raw = await callFragella(`/brands/${encodeURIComponent(brand)}`, { limit });
-      data = (Array.isArray(raw) ? raw : []).map(formatFragrance);
+      let results = Array.isArray(raw) ? raw : [];
+      
+      // If capped at 20, supplement with a search
+      if (results.length > 0 && results.length < limit && results.length === 20) {
+        try {
+          const raw2 = await callFragella("/fragrances", { search: brand, limit: 30 });
+          const items2 = Array.isArray(raw2) ? raw2 : [];
+          const seen = new Set(results.map(r => (r.Name || "").toLowerCase()));
+          for (const item of items2) {
+            if (!seen.has((item.Name || "").toLowerCase())) {
+              results.push(item);
+              seen.add((item.Name || "").toLowerCase());
+            }
+            if (results.length >= limit) break;
+          }
+        } catch (e) { /* ignore */ }
+      }
+      
+      data = results.map(formatFragrance);
 
     } else if (action === "similar" && name) {
       // Find similar fragrances
@@ -193,11 +230,29 @@ exports.handler = async function (event) {
       }
 
     } else if (action === "trending") {
-      // Get popular fragrances — search for popular terms
-      const searches = ["Sauvage", "Aventus", "Bleu de Chanel", "Eros", "Baccarat Rouge"];
-      const pick = searches[Math.floor(Math.random() * searches.length)];
-      const raw = await callFragella("/fragrances", { search: pick, limit });
-      data = (Array.isArray(raw) ? raw : []).map(formatFragrance);
+      // Get popular fragrances — combine multiple popular searches
+      const searches = ["Dior Sauvage", "Chanel", "Tom Ford", "Creed Aventus", "Versace"];
+      const allResults = [];
+      const seen = new Set();
+      
+      for (const term of searches) {
+        if (allResults.length >= limit) break;
+        try {
+          const raw = await callFragella("/fragrances", { search: term, limit: 20 });
+          const items = Array.isArray(raw) ? raw : [];
+          for (const item of items) {
+            const key = (item.Name || "").toLowerCase();
+            if (!seen.has(key)) {
+              seen.add(key);
+              allResults.push(item);
+            }
+            if (allResults.length >= limit) break;
+          }
+        } catch (e) {
+          console.error(`[SPRITZFIND] Trending search "${term}" failed:`, e.message);
+        }
+      }
+      data = allResults.map(formatFragrance);
 
     } else if (action === "notes" && query) {
       // Search notes
