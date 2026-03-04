@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Analytics placeholder -->
+<!-- <script async src="https://www.googletagmanager.com/gtag/js?id=YOUR-GA-ID"></script> -->
+<!-- <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','YOUR-GA-ID');</script> -->
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fragrance Price Comparison — Find the Best Deals | SpritzFind</title>
+  <meta name="description" content="Compare fragrance prices across Sephora, Ulta, Amazon, FragranceX, and more. Find the lowest price on your favorite colognes and perfumes." />
+  <meta name="keywords" content="fragrance price comparison, perfume deals, cologne prices, cheap perfume, discount fragrances, Sephora prices, Ulta deals, perfume finder, fragrance tracker, best cologne deals" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.spritzfind.com" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Fragrance Price Comparison — Find the Best Deals" />
+  <meta property="og:description" content="Compare fragrance prices across Sephora, Ulta, Amazon, FragranceX, and more. Find the lowest price on colognes and perfumes." />
+  <meta property="og:url" content="https://www.spritzfind.com" />
+  <meta property="og:site_name" content="SpritzFind" />
+  <meta property="og:image" content="https://www.spritzfind.com/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Fragrance Price Comparison — Find the Best Deals" />
+  <meta name="twitter:description" content="Compare fragrance prices across Sephora, Ulta, Amazon, FragranceX, and more." />
+  <meta name="twitter:image" content="https://www.spritzfind.com/og-image.png" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f0f5fb'/%3E%3Ctext x='32' y='44' text-anchor='middle' font-family='Georgia,serif' font-weight='700' font-size='28' fill='%235b9bd5'%3ESF%3C/text%3E%3C/svg%3E" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "SpritzFind",
+    "url": "https://www.spritzfind.com",
+    "description": "Compare fragrance prices across Sephora, Ulta, Amazon, FragranceX, and more. Find the best deals on colognes and perfumes.",
+    "applicationCategory": "ShoppingApplication",
+    "operatingSystem": "Web",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #faf8f5;
+      --surface: #ffffff;
+      --border: #e8e2d9;
+      --accent: #5b9bd5;
+      --accent-gold: #b8860b;
+      --accent2: #2d6a4f;
+      --text: #1a1a1a;
+      --muted: #8a8078;
+      --card: #ffffff;
+      --green: #2d6a4f;
+      --warm: #7db8e0;
+      --rose: #c97b84;
+      --light-blue: #e8f1fa;
+      --hero-gradient: linear-gradient(135deg, #faf8f5 0%, #e8f1fa 50%, #faf8f5 100%);
+    }
+    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+
+    /* Subtle texture */
+    .texture { position: fixed; inset: 0; pointer-events: none; z-index: 100; opacity: 0.015;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E"); }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes shimmer { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.9; } }
+    @keyframes dropDown { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-6px); } }
+    @keyframes typingBounce { 0%, 100% { transform: translateY(0); opacity: 0.4; } 50% { transform: translateY(-5px); opacity: 1; } }
+
+    .page { animation: fadeIn 0.2s ease; }
+
+    /* ===== NAV ===== */
+    .nav { border-bottom: 1px solid var(--border); padding: 0 40px; display: flex; align-items: stretch; justify-content: space-between; position: sticky; top: 0; z-index: 50; background: rgba(250,248,245,0.97); backdrop-filter: blur(12px); height: 64px; }
+    .nav-left { display: flex; align-items: center; }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 700; padding-right: 32px; border-right: 1px solid var(--border); display: flex; align-items: center; cursor: pointer; letter-spacing: 0.5px; }
+    .nav-logo .spritz { color: var(--text); }
+    .nav-logo .find { color: var(--accent); }
+    .nav-tabs { display: flex; align-items: stretch; }
+    .nav-tab { display: flex; align-items: center; gap: 7px; padding: 0 22px; font-size: 0.7rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; color: var(--muted); transition: all 0.15s; border-right: 1px solid var(--border); border-bottom: 2px solid transparent; background: transparent; border-top: none; border-left: none; font-family: 'DM Sans', sans-serif; text-decoration: none; }
+    .nav-tab:hover { color: var(--text); background: rgba(91,155,213,0.04); }
+    .nav-tab.active { color: var(--text); border-bottom-color: var(--accent); background: rgba(91,155,213,0.03); }
+    .hamburger { display: none; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text); padding: 8px; }
+    .mobile-menu { display: none; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .alert-btn { background: transparent; border: 1px solid var(--accent); color: var(--accent); font-family: 'DM Sans', sans-serif; font-size: 0.65rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 8px 18px; cursor: pointer; transition: all 0.15s; display: flex; align-items: center; gap: 7px; border-radius: 4px; }
+    .alert-btn:hover { background: var(--accent); color: white; }
+    .alert-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 1.5s infinite; }
+
+    /* ===== SECTIONS ===== */
+    .section-wrap { max-width: 1200px; margin: 0 auto; padding: 48px 40px 80px; }
+    .hero-header { display: flex; align-items: flex-start; gap: 0; margin-bottom: 8px; }
+    .hero-text { flex: 1; min-width: 0; }
+    .hero-img { width: 90px; height: 90px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; overflow: visible; margin-top: 8px; margin-left: -40px; }
+    .bottle-float { animation: float 3s ease-in-out infinite; font-size: 3.5rem; filter: drop-shadow(0 8px 20px rgba(91,155,213,0.15)); }
+    .section-eyebrow { font-size: 0.65rem; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(2.8rem, 6vw, 5rem); line-height: 0.95; letter-spacing: -0.5px; margin-bottom: 8px; }
+    .section-title .outline { -webkit-text-stroke: 1.5px var(--text); color: transparent; }
+    .section-title .filled { color: var(--accent); }
+    .section-sub { font-size: 0.85rem; color: var(--muted); letter-spacing: 0.3px; line-height: 1.7; margin-bottom: 36px; max-width: 540px; }
+
+    /* ===== SEARCH ===== */
+    .search-row { display: flex; max-width: 900px; margin: 0 0 24px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
+    .search-bar { flex: 1; display: flex; background: var(--surface); border: 1px solid var(--border); border-right: none; border-radius: 8px 0 0 8px; }
+    .search-bar input { flex: 1; background: transparent; border: none; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; padding: 16px 20px; outline: none; letter-spacing: 0.3px; }
+    .search-bar input::placeholder { color: var(--muted); font-weight: 400; }
+    .search-go-btn { background: var(--accent); color: white; border: none; font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 600; letter-spacing: 2px; padding: 0 32px; cursor: pointer; transition: background 0.15s; border-radius: 0 8px 8px 0; }
+    .search-go-btn:hover { background: #4a86bd; }
+    .search-go-btn:disabled { background: var(--muted); cursor: not-allowed; }
+
+    /* ===== FILTERS ===== */
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; justify-content: center; }
+    .filter-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 0.7rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; padding: 7px 16px; cursor: pointer; transition: all 0.15s; border-radius: 4px; }
+    .filter-btn:hover, .filter-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(91,155,213,0.05); }
+
+    /* ===== STATUS ===== */
+    .status-bar { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; font-size: 0.75rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+    .pulse-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 1.5s ease-in-out infinite; }
+    .error-msg { margin: 0 0 24px; padding: 16px 20px; border: 1px solid var(--accent); border-radius: 6px; color: var(--accent); font-size: 0.8rem; letter-spacing: 0.5px; line-height: 1.6; background: rgba(91,155,213,0.04); }
+
+    /* ===== GRID & CARDS ===== */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+    .card { background: var(--card); transition: all 0.25s; position: relative; overflow: hidden; display: flex; flex-direction: column; border-radius: 10px; border: 1px solid var(--border); box-shadow: 0 1px 8px rgba(0,0,0,0.04); }
+    .card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(90deg, var(--accent), var(--warm)); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; z-index: 2; }
+    .card:hover { box-shadow: 0 6px 30px rgba(0,0,0,0.08); transform: translateY(-2px); }
+    .card:hover::before { transform: scaleX(1); }
+    .card-img-wrap { width: 100%; height: 220px; background: linear-gradient(135deg, #f8f9fc, #e8f1fa); overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; }
+    .card-img { width: 100%; height: 100%; object-fit: contain; padding: 24px; transition: transform 0.35s ease; }
+    .card:hover .card-img { transform: scale(1.05); }
+    .card-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 4rem; color: #e0d5c0; }
+    .card-source-tag { position: absolute; bottom: 8px; right: 8px; font-size: 0.55rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 8px; background: rgba(255,255,255,0.9); border: 1px solid var(--border); color: var(--muted); border-radius: 3px; }
+    .card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+    .card-brand { font-size: 0.65rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--accent-gold); margin-bottom: 6px; }
+    .card-name { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 600; letter-spacing: 0.3px; line-height: 1.2; margin-bottom: 6px; cursor: pointer; overflow: hidden; min-height: 2.2em; text-decoration: none; color: inherit; display: block; }
+    .card-name:hover { color: var(--accent); }
+    .card-notes { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.3px; margin-bottom: 12px; }
+    .card-meta { display: flex; flex-direction: column; gap: 6px; }
+    .meta-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.78rem; }
+    .meta-label { color: var(--muted); text-transform: uppercase; font-size: 0.65rem; font-weight: 600; letter-spacing: 1px; }
+    .meta-value { color: var(--text); font-weight: 500; }
+    .price { color: var(--green); font-weight: 700; font-size: 0.9rem; }
+
+    /* ===== POPULARITY BAR ===== */
+    .pop-bar { margin-top: 12px; height: 3px; background: var(--border); overflow: hidden; border-radius: 2px; }
+    .pop-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--warm)); border-radius: 2px; }
+    .pop-label { font-size: 0.6rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-top: 5px; display: flex; justify-content: space-between; }
+
+    /* ===== BADGE ===== */
+    .badge { display: inline-block; font-size: 0.6rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 3px; margin-bottom: 8px; }
+    .badge-trending { background: rgba(91,155,213,0.1); color: var(--accent); }
+    .badge-deal { background: rgba(45,106,79,0.1); color: var(--green); }
+    .badge-new { background: rgba(201,123,132,0.1); color: var(--rose); }
+    .badge-luxury { background: rgba(100,80,60,0.1); color: #64503c; }
+
+    /* ===== PRICE COMPARE ===== */
+    .price-compare { margin-top: 14px; border-top: 1px solid var(--border); padding-top: 12px; }
+    .price-compare-label { font-size: 0.6rem; font-weight: 600; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+    .price-compare-rows { display: flex; flex-direction: column; gap: 6px; }
+    .price-row { display: flex; align-items: center; gap: 8px; }
+    .price-row-store { font-size: 0.7rem; font-weight: 500; color: var(--muted); flex: 1; text-transform: uppercase; letter-spacing: 0.5px; }
+    .price-row-amount { font-size: 0.8rem; font-weight: 700; color: var(--green); min-width: 52px; text-align: right; }
+    .price-row-btn { font-family: 'DM Sans', sans-serif; font-size: 0.6rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; background: transparent; border: 1px solid var(--accent-gold); color: var(--accent-gold); padding: 4px 12px; cursor: pointer; transition: all 0.15s; white-space: nowrap; text-decoration: none; display: inline-block; border-radius: 3px; }
+    .price-row-btn:hover { background: var(--accent-gold); color: #fff; }
+
+    /* ===== LOADING ===== */
+    .loading-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+    .loading-card { background: var(--card); border-radius: 10px; border: 1px solid var(--border); overflow: hidden; animation: shimmer 1.5s ease-in-out infinite; }
+    .loading-img { width: 100%; height: 220px; background: linear-gradient(135deg, #f0f4f8, #e0eaf4); }
+    .loading-body { padding: 20px; }
+    .skeleton { background: var(--border); border-radius: 4px; margin-bottom: 12px; }
+    .empty-state { text-align: center; padding: 80px 40px; color: var(--muted); font-size: 0.8rem; letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+    .empty-state h2 { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--border); letter-spacing: 2px; margin-bottom: 16px; }
+
+    /* ===== MODAL ===== */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.2s ease; }
+    .modal { background: var(--surface); border-radius: 12px; max-width: 460px; width: 100%; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+    .modal-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; }
+    .modal-title span { color: var(--accent); }
+    .modal-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--muted); padding: 4px; }
+    .modal-close:hover { color: var(--text); }
+    .modal-body { padding: 24px; }
+    .modal-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.7; margin-bottom: 20px; }
+    .modal-features { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .modal-feature { display: flex; align-items: center; gap: 10px; font-size: 0.78rem; color: var(--text); }
+    .modal-feature-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    .modal-form { display: flex; gap: 8px; }
+    .modal-input { flex: 1; padding: 12px 16px; border: 1px solid var(--border); border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; background: var(--bg); color: var(--text); outline: none; }
+    .modal-input:focus { border-color: var(--accent); }
+    .modal-submit { background: var(--accent); color: white; border: none; padding: 12px 24px; font-family: 'DM Sans', sans-serif; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; border-radius: 6px; transition: background 0.15s; }
+    .modal-submit:hover { background: #4a86bd; }
+    .modal-fine { font-size: 0.65rem; color: var(--muted); margin-top: 12px; text-align: center; }
+
+    /* ===== CHAT ===== */
+    .chat-fab { position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%; background: var(--accent); color: white; border: none; cursor: pointer; z-index: 150; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; box-shadow: 0 4px 20px rgba(91,155,213,0.3); transition: all 0.15s; }
+    .chat-fab:hover { transform: scale(1.05); box-shadow: 0 6px 28px rgba(91,155,213,0.4); }
+    .chat-fab svg { width: 22px; height: 22px; }
+    .chat-fab span { font-size: 0.4rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .chat-window { position: fixed; bottom: 90px; right: 24px; width: 380px; height: 520px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; z-index: 160; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.12); animation: fadeIn 0.15s ease; overflow: hidden; }
+    .chat-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); background: var(--bg); }
+    .chat-header-left { display: flex; align-items: center; gap: 10px; }
+    .chat-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 0.85rem; }
+    .chat-title { font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; }
+    .chat-subtitle { font-size: 0.6rem; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+    .chat-online { width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
+    .chat-close { background: none; border: none; font-size: 1.1rem; cursor: pointer; color: var(--muted); }
+    .chat-close:hover { color: var(--text); }
+    .chat-clear { background: none; border: none; font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; color: var(--muted); font-family: 'DM Sans', sans-serif; font-weight: 600; }
+    .chat-clear:hover { color: var(--accent); }
+    .chat-messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+    .msg { display: flex; gap: 8px; align-items: flex-start; }
+    .msg.user { flex-direction: row-reverse; }
+    .msg-avatar { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; flex-shrink: 0; }
+    .msg-avatar.bot { background: var(--accent); color: white; }
+    .msg-avatar.user { background: var(--border); color: var(--text); }
+    .msg-bubble { max-width: 80%; padding: 10px 14px; font-size: 0.8rem; line-height: 1.6; border-radius: 12px; }
+    .msg.bot .msg-bubble { background: var(--bg); border: 1px solid var(--border); }
+    .msg.user .msg-bubble { background: var(--accent); color: white; }
+    .chat-suggestions { padding: 8px 16px; display: flex; gap: 6px; flex-wrap: wrap; border-top: 1px solid var(--border); }
+    .suggestion-chip { background: var(--bg); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.65rem; padding: 5px 10px; cursor: pointer; border-radius: 20px; transition: all 0.15s; }
+    .suggestion-chip:hover { border-color: var(--accent); color: var(--accent); }
+    .chat-input-row { display: flex; border-top: 1px solid var(--border); }
+    .chat-input { flex: 1; border: none; padding: 14px 16px; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; outline: none; background: transparent; resize: none; }
+    .chat-send { background: var(--accent); color: white; border: none; padding: 0 18px; font-family: 'DM Sans', sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; transition: background 0.15s; }
+    .chat-send:hover { background: #4a86bd; }
+    .chat-send:disabled { background: var(--muted); cursor: not-allowed; }
+    .typing-indicator { display: flex; gap: 4px; padding: 4px 0; }
+    .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); }
+    .typing-dot:nth-child(1) { animation: typingBounce 1s infinite 0s; }
+    .typing-dot:nth-child(2) { animation: typingBounce 1s infinite 0.15s; }
+    .typing-dot:nth-child(3) { animation: typingBounce 1s infinite 0.3s; }
+
+    /* ===== FOOTER ===== */
+    .site-footer { border-top: 1px solid var(--border); padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.5px; max-width: 1200px; margin: 0 auto; }
+    .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 700; }
+    .footer-logo .spritz { color: var(--text); }
+    .footer-logo .find { color: var(--accent); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .nav { padding: 0 16px; }
+      .nav-tabs { display: none; }
+      .hamburger { display: block; }
+      .mobile-menu { display: flex; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: var(--surface); border-bottom: 1px solid var(--border); z-index: 49; box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+      .mobile-menu-item { padding: 14px 24px; font-size: 0.75rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); cursor: pointer; border-bottom: 1px solid var(--border); background: transparent; border-left: none; border-right: none; border-top: none; font-family: 'DM Sans', sans-serif; text-align: left; display: flex; align-items: center; gap: 10px; text-decoration: none; }
+      .mobile-menu-item:hover, .mobile-menu-item.active { color: var(--accent); background: rgba(91,155,213,0.03); }
+      .section-wrap { padding: 32px 16px 60px; }
+      .hero-img { display: none; }
+      .search-row { flex-direction: column; }
+      .search-go-btn { padding: 14px; border-radius: 0 0 8px 8px; }
+      .search-bar { border-radius: 8px 8px 0 0; border-right: 1px solid var(--border); }
+      .grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .card-img-wrap { height: 180px; }
+      .card-body { padding: 14px; }
+      .card-name { font-size: 1.1rem; }
+      .site-footer { flex-direction: column; gap: 8px; text-align: center; }
+      .alert-btn { font-size: 0.55rem; padding: 6px 12px; }
+    }
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr; gap: 16px; }
+      .card-img-wrap { height: 200px; }
+      .chat-window { width: calc(100vw - 24px); right: 12px; bottom: 72px; height: 60vh; }
+      .filters { gap: 6px; }
+      .filter-btn { font-size: 0.6rem; padding: 5px 10px; }
+    }
+  </style>
+</head>
+<body>
+<div id="root"></div>
+<noscript>
+<div style="max-width:900px;margin:0 auto;padding:40px 20px;font-family:sans-serif;color:#1a1a1a;background:#faf8f5">
+  <h1>SpritzFind — Compare Fragrance Prices Across Sephora, Ulta & More</h1>
+  <p>Search once, compare everywhere. SpritzFind is a free fragrance price comparison tool that lets you find the best deals on colognes, perfumes, and body sprays across Sephora, Ulta, Amazon, FragranceX, FragranceNet, and more retailers.</p>
+  <h2>Features</h2>
+  <p>Real-time price comparison across 5+ retailers. Browse by brand, scent type, and gender. Find the best deal every time you buy a fragrance.</p>
+  <h2>Popular Searches</h2>
+  <p>Dior Sauvage, Bleu de Chanel, Yves Saint Laurent Y, Tom Ford Oud Wood, Versace Eros, Creed Aventus, Maison Francis Kurkdjian Baccarat Rouge 540, Le Labo Santal 33, Jo Malone Wood Sage & Sea Salt, Carolina Herrera Good Girl.</p>
+  <h2>Fragrance Guides & Blog</h2>
+  <ul>
+    <li><a href="/blog">View all fragrance guides</a></li>
+  </ul>
+</div>
+</noscript>
+<div class="texture"></div>
+<script>
+// ===== AFFILIATE CONFIG =====
+const AFFILIATE = {
+  amazon:       { tag: "spritzfind-20",        param: "tag" },
+  sephora:      { tag: "YOUR_SEPHORA_CODE",    param: "om_mmc" },
+  ulta:         { tag: "YOUR_ULTA_CODE",       param: "AID" },
+  fragrancex:   { tag: "YOUR_FX_CODE",         param: "ref" },
+  fragrancenet: { tag: "YOUR_FN_CODE",         param: "ref" },
+  jomalone:     { tag: "YOUR_JM_CODE",         param: "utm_source" },
+  nordstrom:    { tag: "YOUR_NORD_CODE",       param: "utm_source" },
+  macys:        { tag: "YOUR_MACYS_CODE",      param: "utm_source" },
+};
+function affLink(url, sourceId) {
+  if (!url) return "#";
+  const aff = AFFILIATE[sourceId];
+  if (!aff || aff.tag.startsWith("YOUR_")) return url;
+  try {
+    const u = new URL(url);
+    u.searchParams.set(aff.param, aff.tag);
+    return u.toString();
+  } catch(e) { return url; }
+}
+
+function trackClick(item, source) {
+  console.log("[SPRITZFIND] click:", item.name, "via", source);
+  // TODO: Analytics event tracking
+}
+
+// ===== DATA =====
+const ALL_SOURCES = [
+  {id:"sephora",label:"Sephora",url:"sephora.com",color:"#000"},
+  {id:"ulta",label:"Ulta",url:"ulta.com",color:"#e4723a"},
+  {id:"amazon",label:"Amazon",url:"amazon.com",color:"#ff9900"},
+  {id:"fragrancex",label:"FragranceX",url:"fragrancex.com",color:"#3a7bd5"},
+  {id:"fragrancenet",label:"FragranceNet",url:"fragrancenet.com",color:"#c00"},
+  {id:"nordstrom",label:"Nordstrom",url:"nordstrom.com",color:"#1a1a1a"},
+  {id:"macys",label:"Macy's",url:"macys.com",color:"#e21a2c"},
+];
+
+const BRAND_FILTERS = [
+  {label: "ALL", query: ""},
+  {label: "---", group: "div1"},
+  {label: "DIOR", query: "Dior fragrance"},
+  {label: "CHANEL", query: "Chanel fragrance"},
+  {label: "TOM FORD", query: "Tom Ford fragrance"},
+  {label: "YSL", query: "Yves Saint Laurent fragrance"},
+  {label: "VERSACE", query: "Versace fragrance"},
+  {label: "CREED", query: "Creed fragrance"},
+  {label: "LE LABO", query: "Le Labo fragrance"},
+  {label: "JO MALONE", query: "Jo Malone"},
+  {label: "---", group: "div2"},
+  {label: "GUCCI", query: "Gucci fragrance"},
+  {label: "PRADA", query: "Prada fragrance"},
+  {label: "BURBERRY", query: "Burberry fragrance"},
+  {label: "DOLCE & GABBANA", query: "Dolce Gabbana fragrance"},
+  {label: "ARMANI", query: "Armani fragrance"},
+  {label: "VALENTINO", query: "Valentino fragrance"},
+  {label: "CAROLINA HERRERA", query: "Carolina Herrera fragrance"},
+  {label: "GIVENCHY", query: "Givenchy fragrance"},
+  {label: "---", group: "div3"},
+  {label: "MAISON MARGIELA", query: "Maison Margiela Replica"},
+  {label: "MFK", query: "Maison Francis Kurkdjian"},
+  {label: "BYREDO", query: "Byredo fragrance"},
+  {label: "DIPTYQUE", query: "Diptyque fragrance"},
+  {label: "INITIO", query: "Initio Parfums"},
+  {label: "PARFUMS DE MARLY", query: "Parfums de Marly"},
+  {label: "XERJOFF", query: "Xerjoff fragrance"},
+  {label: "AMOUAGE", query: "Amouage fragrance"},
+  {label: "---", group: "div4"},
+  {label: "ACQUA DI GIO", query: "Acqua di Gio"},
+  {label: "SAUVAGE", query: "Dior Sauvage"},
+  {label: "BLEU DE CHANEL", query: "Bleu de Chanel"},
+  {label: "AVENTUS", query: "Creed Aventus"},
+  {label: "BACCARAT ROUGE", query: "Baccarat Rouge 540"},
+  {label: "OUD WOOD", query: "Tom Ford Oud Wood"},
+  {label: "SANTAL 33", query: "Le Labo Santal 33"},
+  {label: "EROS", query: "Versace Eros"},
+  {label: "LIGHT BLUE", query: "Dolce Gabbana Light Blue"},
+];
+
+const DEFAULT_DROPS = [
+  {brand:"Dior",name:"Dior Sauvage Eau de Parfum",size:"3.4 oz / 100ml",retail:"$150",notes:"Ambroxan, pepper, bergamot — the #1 selling men's fragrance worldwide.",badge:"trending",popularity:98,image:null,source:"Sephora + Amazon",prices:[
+    {store:"Sephora",storeId:"sephora",price:"$150",url:"https://www.sephora.com/product/sauvage-eau-de-parfum-P434872"},
+    {store:"Ulta",storeId:"ulta",price:"$150",url:"https://www.ulta.com/p/sauvage-eau-de-parfum-pimprod2007215"},
+    {store:"Amazon",storeId:"amazon",price:"$124",url:"https://www.amazon.com/s?k=Dior+Sauvage+EDP+100ml"},
+    {store:"FragranceX",storeId:"fragrancex",price:"$118",url:"https://www.fragrancex.com/products/_cid_cologne-am-lid_c-am-pid_75029m__products.htm"},
+    {store:"FragranceNet",storeId:"fragrancenet",price:"$115",url:"https://www.fragrancenet.com/cologne/christian-dior/dior-sauvage"},
+  ]},
+  {brand:"Chanel",name:"Bleu de Chanel Eau de Parfum",size:"3.4 oz / 100ml",retail:"$165",notes:"Woody aromatic with cedar, sandalwood, and citrus.",badge:"trending",popularity:95,image:null,source:"Sephora + Nordstrom",prices:[
+    {store:"Sephora",storeId:"sephora",price:"$165",url:"https://www.sephora.com/product/bleu-de-chanel-eau-de-parfum-P434524"},
+    {store:"Nordstrom",storeId:"nordstrom",price:"$165",url:"https://www.nordstrom.com/s/chanel-bleu-de-chanel"},
+    {store:"Amazon",storeId:"amazon",price:"$143",url:"https://www.amazon.com/s?k=Bleu+de+Chanel+EDP+100ml"},
+    {store:"FragranceX",storeId:"fragrancex",price:"$138",url:"https://www.fragrancex.com/products/_cid_cologne-am-lid_b-am-pid_74437m__products.htm"},
+  ]},
+  {brand:"Tom Ford",name:"Oud Wood Eau de Parfum",size:"1.7 oz / 50ml",retail:"$290",notes:"Exotic rosewood, cardamom, oud, and sandalwood. Unisex masterpiece.",badge:"luxury",popularity:92,image:null,source:"Sephora + Nordstrom",prices:[
+    {store:"Sephora",storeId:"sephora",price:"$290",url:"https://www.sephora.com/product/oud-wood-P399709"},
+    {store:"Nordstrom",storeId:"nordstrom",price:"$290",url:"https://www.nordstrom.com/s/tom-ford-oud-wood"},
+    {store:"Amazon",storeId:"amazon",price:"$248",url:"https://www.amazon.com/s?k=Tom+Ford+Oud+Wood+50ml"},
+    {store:"FragranceNet",storeId:"fragrancenet",price:"$235",url:"https://www.fragrancenet.com/cologne/tom-ford/tom-ford-oud-wood"},
+  ]},
+  {brand:"YSL",name:"Y Eau de Parfum",size:"3.4 oz / 100ml",retail:"$139",notes:"Fresh, powerful fougere with apple, sage, and amberwood.",badge:"deal",popularity:88,image:null,source:"Ulta + Amazon",prices:[
+    {store:"Ulta",storeId:"ulta",price:"$139",url:"https://www.ulta.com/p/y-eau-de-parfum-pimprod2006977"},
+    {store:"Amazon",storeId:"amazon",price:"$105",url:"https://www.amazon.com/s?k=YSL+Y+EDP+100ml"},
+    {store:"FragranceX",storeId:"fragrancex",price:"$97",url:"https://www.fragrancex.com/products/_cid_cologne-am-lid_y-am-pid_75610m__products.htm"},
+    {store:"Sephora",storeId:"sephora",price:"$139",url:"https://www.sephora.com/product/y-eau-de-parfum-P467852"},
+  ]},
+  {brand:"Versace",name:"Eros Eau de Toilette",size:"3.4 oz / 100ml",retail:"$116",notes:"Mint, green apple, vanilla — bold and confident.",badge:"deal",popularity:90,image:null,source:"Amazon + FragranceX",prices:[
+    {store:"Amazon",storeId:"amazon",price:"$72",url:"https://www.amazon.com/s?k=Versace+Eros+EDT+100ml"},
+    {store:"FragranceX",storeId:"fragrancex",price:"$68",url:"https://www.fragrancex.com/products/_cid_cologne-am-lid_v-am-pid_71938m__products.htm"},
+    {store:"Ulta",storeId:"ulta",price:"$116",url:"https://www.ulta.com/p/eros-eau-de-toilette-pimprod2007431"},
+    {store:"Sephora",storeId:"sephora",price:"$116",url:"https://www.sephora.com/product/eros-P382751"},
+  ]},
+  {brand:"Creed",name:"Aventus Eau de Parfum",size:"3.3 oz / 100ml",retail:"$445",notes:"Pineapple, birch, musk — the king of niche fragrances.",badge:"luxury",popularity:96,image:null,source:"Nordstrom + FragranceNet",prices:[
+    {store:"Nordstrom",storeId:"nordstrom",price:"$445",url:"https://www.nordstrom.com/s/creed-aventus"},
+    {store:"Amazon",storeId:"amazon",price:"$360",url:"https://www.amazon.com/s?k=Creed+Aventus+100ml"},
+    {store:"FragranceNet",storeId:"fragrancenet",price:"$345",url:"https://www.fragrancenet.com/cologne/creed/creed-aventus"},
+    {store:"Sephora",storeId:"sephora",price:"$445",url:"https://www.sephora.com/product/aventus-P470726"},
+  ]},
+];
+
+const CHAT_SYSTEM_PROMPT = `You are NICHE — an expert fragrance advisor on SPRITZFIND. You know everything about perfume houses, notes, layering, seasons, dupes, and where to find the best prices. You speak with refined confidence. Format fragrance names in **bold** and prices in *italic*.`;
+const SUGGESTED_QUESTIONS = ["What's a good daily cologne under $80?","Best niche fragrances for beginners?","Dupes for Creed Aventus?","Summer vs winter scent recs?"];
+
+// ===== HELPERS =====
+function esc(s) {
+  if (s == null) return "";
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function fmtMsg(t) { return t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/\n/g,'<br/>'); }
+const BADGE_MAP = {trending:"badge-trending",deal:"badge-deal",new:"badge-new",luxury:"badge-luxury"};
+const BADGE_LABELS = {trending:"Trending",deal:"Great Deal",new:"New Release",luxury:"Luxury"};
+
+// ===== STATE =====
+let activePage = "find";
+let mobileMenuOpen = false;
+let showAlertModal = false;
+
+// Find state
+let drops = DEFAULT_DROPS;
+let dropsLoading = false;
+let dropsLoadingMore = false;
+let dropsError = null;
+let searchQuery = "";
+let lastQuery = "";
+let dropsPage = 1;
+let hasMore = false;
+let dropsUpdated = null;
+let steps = [];
+let activeCategory = "ALL";
+
+// Chat state
+let chatOpen = false;
+let chatMsgs = [{role:"assistant",content:"Hello! I'm **NICHE** — your personal fragrance advisor on SpritzFind. Ask me about scents, seasons, dupes, or deals."}];
+let chatInput = "";
+let chatThinking = false;
+let chatShowSug = true;
+
+// Alert modal state
+let alertEmail = "";
+let alertDone = false;
+
+// ===== RENDERING =====
+function render() {
+  const root = document.getElementById("root");
+  root.innerHTML = renderAlertModal() + renderNav() + renderPage() + renderFooter() + renderChat();
+  attachEvents();
+}
+
+function renderNav() {
+  const tabs = [
+    {id:"find",label:"Find Deals",icon:""},
+    {id:"blog",label:"Blog",icon:"",href:"/blog"}
+  ];
+  return `<nav class="nav">
+    <div class="nav-left">
+      <div class="nav-logo" data-action="home"><span class="spritz">Spritz</span><span class="find">Find</span></div>
+      <div class="nav-tabs">
+        ${tabs.map(t => t.href
+          ? `<a class="nav-tab" href="${t.href}" style="text-decoration:none">${t.label}</a>`
+          : `<button class="nav-tab ${activePage===t.id?"active":""}" data-action="nav" data-page="${t.id}">${t.label}</button>`
+        ).join("")}
+      </div>
+      <button class="hamburger" data-action="hamburger">${mobileMenuOpen ? "✕" : "☰"}</button>
+    </div>
+    ${mobileMenuOpen ? `<div class="mobile-menu">
+      ${tabs.map(t => t.href
+        ? `<a class="mobile-menu-item" href="${t.href}" style="text-decoration:none">${t.label}</a>`
+        : `<button class="mobile-menu-item ${activePage===t.id?"active":""}" data-action="nav-mobile" data-page="${t.id}">${t.label}</button>`
+      ).join("")}
+    </div>` : ""}
+    <div class="nav-right">
+      <button class="alert-btn" data-action="alert-open"><span class="alert-dot"></span> Deal Alerts</button>
+    </div>
+  </nav>`;
+}
+
+function renderPage() {
+  if (activePage === "find") return renderFindPage();
+  return "";
+}
+
+function renderFooter() {
+  return `<footer class="site-footer">
+    <div class="footer-logo"><span class="spritz">Spritz</span><span class="find">Find</span></div>
+    <div><a href="/blog" style="color:var(--accent);text-decoration:none">Blog</a> &middot; Prices subject to change. Links may be affiliate links. Not affiliated with any retailer.</div>
+  </footer>`;
+}
+
+function renderAlertModal() {
+  if (!showAlertModal) return "";
+  if (alertDone) {
+    return `<div class="modal-overlay" data-action="alert-overlay">
+      <div class="modal">
+        <div style="text-align:center;padding:40px 28px">
+          <div style="font-size:2.5rem;margin-bottom:12px">✨</div>
+          <div style="font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;color:var(--accent)">You're In</div>
+          <div style="font-size:0.78rem;color:var(--muted);margin-top:8px">Deal alerts set for ${esc(alertEmail)}</div>
+        </div>
+      </div>
+    </div>`;
+  }
+  return `<div class="modal-overlay" data-action="alert-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">Spritz<span>Alerts</span></div>
+        <button class="modal-close" data-action="alert-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-desc">Never miss a deal. Get notified when your favorite fragrances drop in price.</div>
+        <div class="modal-features">
+          ${["Price drop alerts on watched fragrances","New release notifications","Exclusive coupon codes & sales","Weekly best-deal roundups"].map(f =>
+            `<div class="modal-feature"><div class="modal-feature-dot"></div>${f}</div>`
+          ).join("")}
+        </div>
+        <div class="modal-form">
+          <input class="modal-input" type="email" placeholder="your@email.com" id="alert-email-input" value="${esc(alertEmail)}"/>
+          <button class="modal-submit" data-action="alert-submit">NOTIFY ME</button>
+        </div>
+        <div class="modal-fine">No spam. Unsubscribe anytime.</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// --- Fragrance Image ---
+function renderDropImage(drop) {
+  const src = (drop.image && drop.image !== "null") ? drop.image : null;
+  const alt = esc((drop.brand ? drop.brand + " " : "") + drop.name);
+  return `<div class="card-img-wrap">
+    ${src ? `<img class="card-img" src="${esc(src)}" alt="${alt}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\\'card-img-placeholder\\'>${esc((drop.brand||"?")[0])}</div>'"/>` : `<div class="card-img-placeholder">${esc((drop.brand||"?")[0])}</div>`}
+    ${drop.source ? `<div class="card-source-tag">${esc(drop.source)}</div>` : ""}
+  </div>`;
+}
+
+// --- Price Compare ---
+function renderPriceCompare(prices, drop) {
+  if (!prices || prices.length === 0) return "";
+  const sorted = [...prices].sort((a,b) => {
+    const pa = parseFloat(a.price.replace(/[^0-9.]/g,''));
+    const pb = parseFloat(b.price.replace(/[^0-9.]/g,''));
+    if (isNaN(pa)) return 1;
+    if (isNaN(pb)) return -1;
+    return pa - pb;
+  });
+  return `<div class="price-compare">
+    <div class="price-compare-label">${prices.length > 1 ? "Compare Prices" : "Best Price"}</div>
+    <div class="price-compare-rows">
+      ${sorted.map((p,i) => `<div class="price-row">
+        <span class="price-row-store">${esc(p.store)}</span>
+        <span class="price-row-amount"${i===0?' style="color:var(--green);font-weight:800"':''}>${esc(p.price)}${i===0?' ★':''}</span>
+        <a href="${esc(affLink(p.url,p.storeId))}" target="_blank" rel="noopener noreferrer"
+          class="price-row-btn"
+          onclick="event.stopPropagation();trackClick(${JSON.stringify({name:drop.name})},'${esc(p.storeId)}')">Buy</a>
+      </div>`).join("")}
+    </div>
+  </div>`;
+}
+
+// --- Drop Card ---
+function renderDropCard(drop, i) {
+  return `<div class="card">
+    ${renderDropImage(drop)}
+    <div class="card-body">
+      ${drop.badge ? `<div class="badge ${BADGE_MAP[drop.badge]||"badge-new"}">${BADGE_LABELS[drop.badge]||esc(drop.badge)}</div>` : ""}
+      <div class="card-brand">${esc(drop.brand)}</div>
+      <div class="card-name">${esc(drop.name)}</div>
+      ${drop.notes ? `<div class="card-notes">${esc(drop.notes)}</div>` : ""}
+      <div class="card-meta">
+        ${drop.size ? `<div class="meta-row"><span class="meta-label">Size</span><span class="meta-value">${esc(drop.size)}</span></div>` : ""}
+        <div class="meta-row"><span class="meta-label">Retail</span><span class="price">${esc(drop.retail||"—")}</span></div>
+      </div>
+      ${drop.popularity ? `<div class="pop-bar"><div class="pop-fill" style="width:${drop.popularity}%"></div></div><div class="pop-label"><span>Popularity</span><span>${drop.popularity}/100</span></div>` : ""}
+      ${renderPriceCompare(drop.prices, drop)}
+    </div>
+  </div>`;
+}
+
+// --- Find Page ---
+function renderFindPage() {
+  window._BRAND_FILTERS = BRAND_FILTERS;
+  const filtered = drops;
+
+  let content;
+  if (dropsLoading) {
+    content = `<div class="loading-grid">
+      ${[1,2,3,4,5,6].map(i => `<div class="loading-card"><div class="loading-img"></div><div class="loading-body"><div class="skeleton" style="width:60px;height:10px"></div><div class="skeleton" style="width:70%;height:22px;margin-top:8px"></div><div class="skeleton" style="width:100%;height:8px;margin-top:12px"></div></div></div>`).join("")}
+    </div>`;
+  } else if (filtered.length === 0) {
+    content = `<div class="empty-state"><h2>No Results</h2>Try a different search or browse by brand above.</div>`;
+  } else {
+    content = `<div>
+      <div class="grid">${filtered.map((d,i) => renderDropCard(d,i)).join("")}</div>
+      ${hasMore && lastQuery && !dropsLoading ? `<div style="text-align:center;padding:32px 0">
+        <button data-action="load-more" ${dropsLoadingMore?"disabled":""} style="background:${dropsLoadingMore?"var(--border)":"var(--accent)"};color:${dropsLoadingMore?"var(--muted)":"#fff"};border:none;padding:14px 48px;border-radius:8px;font-family:'Playfair Display',serif;font-size:1rem;font-weight:600;letter-spacing:1px;cursor:${dropsLoadingMore?"wait":"pointer"};transition:all 0.2s">
+          ${dropsLoadingMore ? "Loading..." : "Load More"}
+        </button>
+        <div style="font-size:0.7rem;color:var(--muted);margin-top:8px">Showing ${filtered.length} results</div>
+      </div>` : ""}
+    </div>`;
+  }
+
+  return `<div class="page"><div class="section-wrap">
+    <div class="hero-header">
+      <div class="hero-text">
+        <div class="section-eyebrow">Price Intelligence</div>
+        <h2 class="section-title"><span class="filled">Find</span> <span class="outline">Your Scent</span></h2>
+        <p class="section-sub">Compare fragrance prices across every major retailer. Find the best deal on colognes, perfumes, and niche scents — all in one search.</p>
+      </div>
+      <div class="hero-img">
+        <div class="bottle-float">🌸</div>
+      </div>
+    </div>
+    <div class="search-row">
+      <div class="search-bar">
+        <input id="search-input" value="${esc(searchQuery)}" placeholder="Search by brand, fragrance name, or notes..."/>
+      </div>
+      <button class="search-go-btn" data-action="search" ${dropsLoading?"disabled":""}>${dropsLoading?"Searching...":"SEARCH"}</button>
+    </div>
+    <div style="text-align:center;margin-top:16px;margin-bottom:8px;font-size:0.65rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--accent)">Browse by Brand & Scent</div>
+    <div class="filters">
+      ${BRAND_FILTERS.map((cat,idx) =>
+        cat.label === "---"
+        ? `<div style="width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:4px 0;opacity:0.3"></div>`
+        : `<button class="filter-btn ${activeCategory===cat.label?"active":""}" data-action="category" data-idx="${idx}">${esc(cat.label)}</button>`
+      ).join("")}
+    </div>
+    ${dropsError ? `<div class="error-msg">${esc(dropsError)}</div>` : ""}
+    <div class="status-bar">
+      <div class="pulse-dot"></div>
+      ${dropsLoading ? "Searching retailers..." : `${filtered.length} fragrances found`}
+      ${dropsUpdated ? `<span style="margin-left:auto">Updated ${esc(dropsUpdated)}</span>` : ""}
+    </div>
+    ${content}
+  </div></div>`;
+}
+
+// --- Chat Widget ---
+function renderChat() {
+  let windowHtml = "";
+  if (chatOpen) {
+    windowHtml = `<div class="chat-window">
+      <div class="chat-header">
+        <div class="chat-header-left">
+          <div class="chat-avatar">N</div>
+          <div>
+            <div class="chat-title">NICHE</div>
+            <div class="chat-subtitle"><span class="chat-online"></span>Online &middot; Fragrance AI</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button class="chat-clear" data-action="chat-clear">Clear</button>
+          <button class="chat-close" data-action="chat-close">✕</button>
+        </div>
+      </div>
+      <div class="chat-messages" id="chat-messages">
+        ${chatMsgs.map((m,i) => `<div class="msg ${m.role==="user"?"user":"bot"}">
+          <div class="msg-avatar ${m.role==="user"?"user":"bot"}">${m.role==="user"?"U":"N"}</div>
+          <div class="msg-bubble">${fmtMsg(m.content)}</div>
+        </div>`).join("")}
+        ${chatThinking ? `<div class="msg bot"><div class="msg-avatar bot">N</div><div class="msg-bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div></div>` : ""}
+        <div id="chat-bottom"></div>
+      </div>
+      ${chatShowSug ? `<div class="chat-suggestions">${SUGGESTED_QUESTIONS.map((q,i) => `<button class="suggestion-chip" data-action="chat-suggest" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div>` : ""}
+      <div class="chat-input-row">
+        <textarea id="chat-input" class="chat-input" placeholder="Ask about any fragrance..." rows="1">${esc(chatInput)}</textarea>
+        <button class="chat-send" data-action="chat-send" ${chatThinking?"disabled":""}>SEND</button>
+      </div>
+    </div>`;
+  }
+  return windowHtml + `<button class="chat-fab" data-action="chat-toggle">
+    ${chatOpen
+      ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`
+      : `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>ASK NICHE</span>`
+    }
+  </button>`;
+}
+
+// ===== EVENT HANDLING =====
+function attachEvents() {
+  const si = document.getElementById("search-input");
+  if (si) {
+    si.addEventListener("keydown", e => {
+      if (e.key === "Enter") { searchQuery = si.value; doSearch(searchQuery); }
+    });
+    si.value = searchQuery;
+  }
+
+  const ae = document.getElementById("alert-email-input");
+  if (ae) ae.addEventListener("input", e => { alertEmail = e.target.value; });
+
+  const ci = document.getElementById("chat-input");
+  if (ci) {
+    ci.addEventListener("input", e => { chatInput = e.target.value; });
+    ci.addEventListener("keydown", e => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); doSendChat(); }
+    });
+    if (chatOpen) setTimeout(() => ci.focus(), 50);
+  }
+
+  const cb = document.getElementById("chat-bottom");
+  if (cb) cb.scrollIntoView({behavior:"smooth"});
+}
+
+// ===== GLOBAL CLICK HANDLER =====
+document.addEventListener("click", function(e) {
+  const link = e.target.closest("a[href]");
+  if (link && link.href && !link.dataset.action) return;
+  const btn = e.target.closest("[data-action]");
+  if (!btn) return;
+  const action = btn.dataset.action;
+
+  if (action === "home") { activePage = "find"; mobileMenuOpen = false; render(); }
+  else if (action === "nav") { activePage = btn.dataset.page; render(); }
+  else if (action === "nav-mobile") { activePage = btn.dataset.page; mobileMenuOpen = false; render(); }
+  else if (action === "hamburger") { mobileMenuOpen = !mobileMenuOpen; render(); }
+  else if (action === "alert-open") { showAlertModal = true; alertDone = false; alertEmail = ""; render(); }
+  else if (action === "alert-close" || action === "alert-overlay") {
+    if (action === "alert-overlay" && e.target !== btn) return;
+    showAlertModal = false; render();
+  }
+  else if (action === "alert-submit") {
+    if (!alertEmail.includes("@")) return;
+    console.log("[SPRITZFIND] subscriber:", alertEmail);
+    alertDone = true; render();
+  }
+  else if (action === "search") {
+    const si = document.getElementById("search-input");
+    if (si) searchQuery = si.value;
+    doSearch(searchQuery);
+  }
+  else if (action === "category") {
+    const cats = window._BRAND_FILTERS;
+    const cat = cats[parseInt(btn.dataset.idx)];
+    if (!cat) return;
+    activeCategory = cat.label;
+    if (cat.query === "") {
+      searchQuery = "";
+      drops = DEFAULT_DROPS;
+      dropsUpdated = new Date().toLocaleTimeString();
+      render();
+    } else {
+      searchQuery = cat.query;
+      doSearch(cat.query);
+    }
+  }
+  else if (action === "load-more") { /* doLoadMore() placeholder */ }
+  else if (action === "chat-toggle") { chatOpen = !chatOpen; render(); }
+  else if (action === "chat-close") { chatOpen = false; render(); }
+  else if (action === "chat-clear") {
+    chatMsgs = [{role:"assistant",content:"Fresh start. What fragrance can I help with?"}];
+    chatShowSug = true; render();
+  }
+  else if (action === "chat-send") { doSendChat(); }
+  else if (action === "chat-suggest") { chatInput = btn.dataset.q; doSendChat(btn.dataset.q); }
+});
+
+// ===== ASYNC ACTIONS =====
+async function doSearch(q) {
+  dropsLoading = true;
+  dropsError = null;
+  steps = [{label:"Searching retailers",status:"active"}];
+  dropsPage = 1;
+  hasMore = false;
+  lastQuery = q || "__all__";
+  render();
+
+  // For now, filter default drops by query — replace with real API later
+  await new Promise(r => setTimeout(r, 600)); // Simulate loading
+
+  if (q && q.trim()) {
+    const lower = q.toLowerCase();
+    const results = DEFAULT_DROPS.filter(d =>
+      d.name.toLowerCase().includes(lower) ||
+      d.brand.toLowerCase().includes(lower) ||
+      (d.notes && d.notes.toLowerCase().includes(lower))
+    );
+    drops = results.length > 0 ? results : DEFAULT_DROPS;
+    if (results.length === 0) dropsError = `No exact matches for "${q}". Showing featured fragrances.`;
+  } else {
+    drops = DEFAULT_DROPS;
+  }
+
+  dropsLoading = false;
+  dropsUpdated = new Date().toLocaleTimeString();
+  render();
+}
+
+async function doSendChat(text) {
+  const t = text || chatInput.trim();
+  if (!t || chatThinking) return;
+  chatInput = ""; chatShowSug = false;
+  chatMsgs = [...chatMsgs, {role:"user",content:t}];
+  chatThinking = true;
+  render();
+
+  // Placeholder response — connect to your Netlify function / API
+  await new Promise(r => setTimeout(r, 800));
+  const reply = "I'd be happy to help with that! This chat will be powered by AI once connected to your backend API. For now, try searching for specific fragrances using the search bar above.";
+  chatMsgs = [...chatMsgs, {role:"assistant",content:reply}];
+  chatThinking = false;
+  render();
+}
+
+// ===== INIT =====
+(function init() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const searchParam = urlParams.get("search");
+  if (searchParam) {
+    searchQuery = searchParam;
+    render();
+    doSearch(searchParam);
+    return;
+  }
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+# Fragrance detail pages (SEO) - for future use
+[[redirects]]
+  from = "/fragrance/*"
+  to = "/fragrance.html"
+  status = 200
+
+# Blog clean URLs
+[[redirects]]
+  from = "/blog"
+  to = "/blog/index.html"
+  status = 200
