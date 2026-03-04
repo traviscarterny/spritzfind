@@ -1,11 +1,68 @@
-# Fragrance detail pages (SEO) - for future use
+# Fragrance detail pages (SEO)
 [[redirects]]
   from = "/fragrance/*"
   to = "/fragrance.html"
+  status = 200
+
+# Brand pages (SEO)
+[[redirects]]
+  from = "/brand/*"
+  to = "/brand.html"
+  status = 200
+
+# Standalone pages (clean URLs)
+[[redirects]]
+  from = "/releases"
+  to = "/releases.html"
+  status = 200
+
+[[redirects]]
+  from = "/deals"
+  to = "/deals.html"
   status = 200
 
 # Blog clean URLs
 [[redirects]]
   from = "/blog"
   to = "/blog/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/best-colognes-under-50"
+  to = "/blog/best-colognes-under-50.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/dior-sauvage-vs-bleu-de-chanel"
+  to = "/blog/dior-sauvage-vs-bleu-de-chanel.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/where-to-buy-discount-perfume"
+  to = "/blog/where-to-buy-discount-perfume.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/best-fall-fragrances-2026"
+  to = "/blog/best-fall-fragrances-2026.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/fragrance-price-comparison-guide"
+  to = "/blog/fragrance-price-comparison-guide.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/best-niche-fragrances-beginners"
+  to = "/blog/best-niche-fragrances-beginners.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/creed-aventus-dupes"
+  to = "/blog/creed-aventus-dupes.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/how-to-make-cologne-last-longer"
+  to = "/blog/how-to-make-cologne-last-longer.html"
   status = 200

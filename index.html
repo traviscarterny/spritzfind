@@ -517,6 +517,8 @@ function render() {
 function renderNav() {
   const tabs = [
     {id:"find",label:"Find Deals",icon:""},
+    {id:"releases",label:"New Releases",icon:"",href:"/releases"},
+    {id:"deals",label:"Deals",icon:"",href:"/deals"},
     {id:"blog",label:"Blog",icon:"",href:"/blog"}
   ];
   return `<nav class="nav">
@@ -550,7 +552,7 @@ function renderPage() {
 function renderFooter() {
   return `<footer class="site-footer">
     <div class="footer-logo"><span class="spritz">Spritz</span><span class="find">Find</span></div>
-    <div><a href="/blog" style="color:var(--accent);text-decoration:none">Blog</a> &middot; Prices subject to change. Links may be affiliate links. Not affiliated with any retailer.</div>
+    <div><a href="/releases" style="color:var(--accent);text-decoration:none">Releases</a> &middot; <a href="/deals" style="color:var(--accent);text-decoration:none">Deals</a> &middot; <a href="/blog" style="color:var(--accent);text-decoration:none">Blog</a> &middot; Prices subject to change. Links may be affiliate links. Not affiliated with any retailer.</div>
   </footer>`;
 }
 
