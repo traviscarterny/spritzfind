@@ -41,7 +41,7 @@
   }
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=GFS+Didot&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -78,7 +78,7 @@
     /* ===== NAV ===== */
     .nav { border-bottom: 1px solid var(--border); padding: 0 40px; display: flex; align-items: stretch; justify-content: space-between; position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); height: 64px; }
     .nav-left { display: flex; align-items: center; }
-    .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 500; padding-right: 32px; border-right: 1px solid var(--border); display: flex; align-items: center; cursor: pointer; letter-spacing: 2px; }
+    .nav-logo { font-family: 'GFS Didot', serif; font-size: 1.6rem; font-weight: 400; padding-right: 32px; border-right: 1px solid var(--border); display: flex; align-items: center; cursor: pointer; letter-spacing: 3px; }
     .nav-logo .spritz { color: var(--text); }
     .nav-logo .find { color: var(--accent); }
     .nav-tabs { display: flex; align-items: stretch; }
@@ -99,9 +99,9 @@
     .hero-img { width: 90px; height: 90px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; overflow: visible; margin-top: 8px; margin-left: -40px; }
     .bottle-float { animation: float 3s ease-in-out infinite; font-size: 3.5rem; filter: drop-shadow(0 8px 20px rgba(91,155,213,0.15)); }
     .section-eyebrow { font-size: 0.65rem; font-weight: 500; letter-spacing: 6px; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
-    .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(3rem, 7vw, 5.5rem); line-height: 0.95; letter-spacing: 1px; margin-bottom: 8px; font-weight: 300; }
-    .section-title .outline { color: var(--text); font-weight: 300; }
-    .section-title .filled { color: var(--accent); }
+    .section-title { font-family: 'GFS Didot', serif; font-size: clamp(3rem, 7vw, 5.5rem); line-height: 0.95; letter-spacing: 2px; margin-bottom: 8px; font-weight: 400; }
+    .section-title .outline { color: var(--text); font-weight: 400; }
+    .section-title .filled { color: var(--accent); font-weight: 400; }
     .section-sub { font-size: 0.85rem; color: var(--muted); letter-spacing: 0.3px; line-height: 1.7; margin-bottom: 36px; max-width: 540px; }
 
     /* ===== SEARCH ===== */
@@ -109,7 +109,7 @@
     .search-bar { flex: 1; display: flex; background: var(--surface); border: 1px solid var(--border); border-right: none; border-radius: 8px 0 0 8px; }
     .search-bar input { flex: 1; background: transparent; border: none; color: var(--text); font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 500; padding: 16px 20px; outline: none; letter-spacing: 0.3px; }
     .search-bar input::placeholder { color: var(--muted); font-weight: 400; }
-    .search-go-btn { background: var(--accent); color: white; border: none; font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 600; letter-spacing: 2px; padding: 0 32px; cursor: pointer; transition: background 0.15s; border-radius: 0 8px 8px 0; }
+    .search-go-btn { background: var(--accent); color: white; border: none; font-family: 'GFS Didot', serif; font-size: 1rem; font-weight: 600; letter-spacing: 2px; padding: 0 32px; cursor: pointer; transition: background 0.15s; border-radius: 0 8px 8px 0; }
     .search-go-btn:hover { background: #4a86bd; }
     .search-go-btn:disabled { background: var(--muted); cursor: not-allowed; }
 
@@ -132,11 +132,11 @@
     .card-img-wrap { width: 100%; height: 220px; background: linear-gradient(135deg, #f7f9fc, #e8f1fa); overflow: hidden; display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; }
     .card-img { width: 100%; height: 100%; object-fit: contain; padding: 24px; transition: transform 0.35s ease; }
     .card:hover .card-img { transform: scale(1.05); }
-    .card-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-size: 4rem; color: #e0d5c0; }
+    .card-img-placeholder { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-family: 'GFS Didot', serif; font-size: 4rem; color: #e0d5c0; }
     .card-source-tag { position: absolute; bottom: 8px; right: 8px; font-size: 0.55rem; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 8px; background: rgba(255,255,255,0.9); border: 1px solid var(--border); color: var(--muted); border-radius: 3px; }
     .card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
     .card-brand { font-size: 0.65rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--accent-gold); margin-bottom: 6px; }
-    .card-name { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 500; letter-spacing: 0.5px; line-height: 1.2; margin-bottom: 6px; cursor: pointer; overflow: hidden; min-height: 2.2em; text-decoration: none; color: inherit; display: block; }
+    .card-name { font-family: 'GFS Didot', serif; font-size: 1.3rem; font-weight: 400; letter-spacing: 0.5px; line-height: 1.2; margin-bottom: 6px; cursor: pointer; overflow: hidden; min-height: 2.2em; text-decoration: none; color: inherit; display: block; }
     .card-name:hover { color: var(--accent); }
     .card-notes { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.3px; margin-bottom: 12px; }
     .card-meta { display: flex; flex-direction: column; gap: 6px; }
@@ -174,13 +174,13 @@
     .loading-body { padding: 20px; }
     .skeleton { background: var(--border); border-radius: 4px; margin-bottom: 12px; }
     .empty-state { text-align: center; padding: 80px 40px; color: var(--muted); font-size: 0.8rem; letter-spacing: 1.5px; text-transform: uppercase; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
-    .empty-state h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; color: var(--border); letter-spacing: 2px; margin-bottom: 16px; }
+    .empty-state h2 { font-family: 'GFS Didot', serif; font-size: 2.5rem; color: var(--border); letter-spacing: 2px; margin-bottom: 16px; }
 
     /* ===== MODAL ===== */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.2s ease; }
     .modal { background: var(--surface); border-radius: 12px; max-width: 460px; width: 100%; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
     .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); }
-    .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 500; letter-spacing: 1px; }
+    .modal-title { font-family: 'GFS Didot', serif; font-size: 1.4rem; font-weight: 400; letter-spacing: 2px; }
     .modal-title span { color: var(--accent); }
     .modal-close { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--muted); padding: 4px; }
     .modal-close:hover { color: var(--text); }
@@ -204,7 +204,7 @@
     .chat-window { position: fixed; bottom: 90px; right: 24px; width: 380px; height: 520px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; z-index: 160; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.12); animation: fadeIn 0.15s ease; overflow: hidden; }
     .chat-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); background: var(--bg); }
     .chat-header-left { display: flex; align-items: center; gap: 10px; }
-    .chat-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-family: 'Cormorant Garamond', serif; font-weight: 700; font-size: 0.85rem; }
+    .chat-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-family: 'GFS Didot', serif; font-weight: 700; font-size: 0.85rem; }
     .chat-title { font-weight: 700; font-size: 0.8rem; letter-spacing: 0.5px; }
     .chat-subtitle { font-size: 0.6rem; color: var(--muted); display: flex; align-items: center; gap: 5px; }
     .chat-online { width: 5px; height: 5px; border-radius: 50%; background: var(--green); }
@@ -237,7 +237,7 @@
 
     /* ===== FOOTER ===== */
     .site-footer { border-top: 1px solid var(--border); padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; font-size: 0.65rem; color: var(--muted); letter-spacing: 0.5px; max-width: 1200px; margin: 0 auto; }
-    .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 500; letter-spacing: 2px; }
+    .footer-logo { font-family: 'GFS Didot', serif; font-size: 1.2rem; font-weight: 400; letter-spacing: 3px; }
     .footer-logo .spritz { color: var(--text); }
     .footer-logo .find { color: var(--accent); }
 
@@ -502,7 +502,7 @@ function renderAlertModal() {
       <div class="modal">
         <div style="text-align:center;padding:40px 28px">
           <div style="font-size:2.5rem;margin-bottom:12px">✨</div>
-          <div style="font-family:'Cormorant Garamond',serif;font-size:1.7rem;font-weight:500;letter-spacing:1px;color:var(--accent)">You're In</div>
+          <div style="font-family:'GFS Didot',serif;font-size:1.7rem;font-weight:500;letter-spacing:1px;color:var(--accent)">You're In</div>
           <div style="font-size:0.78rem;color:var(--muted);margin-top:8px">Deal alerts set for ${esc(alertEmail)}</div>
         </div>
       </div>
@@ -600,7 +600,7 @@ function renderFindPage() {
     content = `<div>
       <div class="grid">${filtered.map((d,i) => renderDropCard(d,i)).join("")}</div>
       ${hasMore && lastQuery && !dropsLoading ? `<div style="text-align:center;padding:32px 0">
-        <button data-action="load-more" ${dropsLoadingMore?"disabled":""} style="background:${dropsLoadingMore?"var(--border)":"var(--accent)"};color:${dropsLoadingMore?"var(--muted)":"#fff"};border:none;padding:14px 48px;border-radius:8px;font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:600;letter-spacing:1px;cursor:${dropsLoadingMore?"wait":"pointer"};transition:all 0.2s">
+        <button data-action="load-more" ${dropsLoadingMore?"disabled":""} style="background:${dropsLoadingMore?"var(--border)":"var(--accent)"};color:${dropsLoadingMore?"var(--muted)":"#fff"};border:none;padding:14px 48px;border-radius:8px;font-family:'GFS Didot',serif;font-size:1rem;font-weight:600;letter-spacing:1px;cursor:${dropsLoadingMore?"wait":"pointer"};transition:all 0.2s">
           ${dropsLoadingMore ? "Loading..." : "Load More"}
         </button>
         <div style="font-size:0.7rem;color:var(--muted);margin-top:8px">Showing ${filtered.length} results</div>
@@ -612,7 +612,7 @@ function renderFindPage() {
     <div class="hero-header">
       <div class="hero-text">
         <div class="section-eyebrow">Price Intelligence</div>
-        <h2 class="section-title"><span class="filled">Find</span> <span class="outline">Your Scent</span></h2>
+        <h2 class="section-title"><span class="filled">FIND</span> <span class="outline">Your Scent</span></h2>
         <p class="section-sub">Compare fragrance prices across every major retailer. Find the best deal on colognes, perfumes, and niche scents — all in one search.</p>
       </div>
 
