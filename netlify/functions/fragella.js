@@ -267,7 +267,7 @@ exports.handler = async function (event) {
         if (!seen.has(key)) { seen.add(key); allResults.push(item); }
       }
 
-      // If we got capped at 20, try supplemental searches
+      // If we got capped at 20, try supplemental searches IN PARALLEL
       if (allResults.length < limit && allResults.length >= 15) {
         const supplements = [
           `${query} pour homme`,
@@ -275,23 +275,24 @@ exports.handler = async function (event) {
           `${query} eau de parfum`,
           `${query} intense`,
         ];
-        for (const term of supplements) {
+        const supFetches = supplements.map(term => 
+          callFragella("/fragrances", { search: term, limit: 20 }).catch(() => [])
+        );
+        const supResults = await Promise.all(supFetches);
+        for (const raw2 of supResults) {
+          for (const item of (Array.isArray(raw2) ? raw2 : [])) {
+            const key = (item.Name || "").toLowerCase();
+            if (!seen.has(key)) { seen.add(key); allResults.push(item); }
+            if (allResults.length >= limit) break;
+          }
           if (allResults.length >= limit) break;
-          try {
-            const raw2 = await callFragella("/fragrances", { search: term, limit: 20 });
-            for (const item of (Array.isArray(raw2) ? raw2 : [])) {
-              const key = (item.Name || "").toLowerCase();
-              if (!seen.has(key)) { seen.add(key); allResults.push(item); }
-              if (allResults.length >= limit) break;
-            }
-          } catch (e) {}
         }
       }
 
-      data = await enrichWithEbay(allResults);
+      // Format without eBay for speed — eBay prices come on detail page
+      data = allResults.map(f => formatFragrance(f, []));
 
     } else if (action === "brand" && brand) {
-      // Cast a wide net — search multiple variations to get as many results as possible
       const searchTerms = [
         brand,
         `${brand} pour homme`,
@@ -305,35 +306,35 @@ exports.handler = async function (event) {
       const allResults = [];
       const seen = new Set();
 
-      // First try the brand endpoint
-      try {
-        const raw = await callFragella(`/brands/${encodeURIComponent(brand)}`, { limit: 20 });
-        for (const item of (Array.isArray(raw) ? raw : [])) {
-          const key = (item.Name || "").toLowerCase();
-          if (!seen.has(key)) { seen.add(key); allResults.push(item); }
-        }
-      } catch (e) {}
+      // Fire brand endpoint + all searches in parallel
+      const brandFetch = callFragella(`/brands/${encodeURIComponent(brand)}`, { limit: 20 }).catch(() => []);
+      const searchFetches = searchTerms.map(term => 
+        callFragella("/fragrances", { search: term, limit: 20 }).catch(() => [])
+      );
+      const [brandRaw, ...searchRaw] = await Promise.all([brandFetch, ...searchFetches]);
 
-      // Then supplement with multiple searches
-      for (const term of searchTerms) {
-        if (allResults.length >= limit) break;
-        try {
-          const raw = await callFragella("/fragrances", { search: term, limit: 20 });
-          for (const item of (Array.isArray(raw) ? raw : [])) {
-            const key = (item.Name || "").toLowerCase();
-            // Only include results that actually match the brand
-            const itemBrand = (item.Brand || "").toLowerCase();
-            const searchBrand = brand.toLowerCase();
-            if (!seen.has(key) && (itemBrand.includes(searchBrand) || searchBrand.includes(itemBrand))) {
-              seen.add(key);
-              allResults.push(item);
-            }
-            if (allResults.length >= limit) break;
-          }
-        } catch (e) {}
+      // Add brand endpoint results first
+      for (const item of (Array.isArray(brandRaw) ? brandRaw : [])) {
+        const key = (item.Name || "").toLowerCase();
+        if (!seen.has(key)) { seen.add(key); allResults.push(item); }
       }
 
-      data = await enrichWithEbay(allResults);
+      // Add search results, filtering to matching brand
+      const searchBrand = brand.toLowerCase();
+      for (const raw of searchRaw) {
+        for (const item of (Array.isArray(raw) ? raw : [])) {
+          const key = (item.Name || "").toLowerCase();
+          const itemBrand = (item.Brand || "").toLowerCase();
+          if (!seen.has(key) && (itemBrand.includes(searchBrand) || searchBrand.includes(itemBrand))) {
+            seen.add(key);
+            allResults.push(item);
+          }
+          if (allResults.length >= limit) break;
+        }
+        if (allResults.length >= limit) break;
+      }
+
+      data = allResults.map(f => formatFragrance(f, []));
 
     } else if (action === "similar" && name) {
       const raw = await callFragella("/fragrances/similar", { name, limit });
@@ -344,20 +345,26 @@ exports.handler = async function (event) {
 
     } else if (action === "trending") {
       const searches = ["Dior Sauvage", "Chanel", "Tom Ford", "Creed Aventus", "Versace"];
+      
+      // Run all Fragella searches in parallel for speed
+      const fetches = searches.map(term => 
+        callFragella("/fragrances", { search: term, limit: 20 }).catch(() => [])
+      );
+      const results = await Promise.all(fetches);
+      
       const allResults = [];
       const seen = new Set();
-      for (const term of searches) {
+      for (const raw of results) {
+        for (const item of (Array.isArray(raw) ? raw : [])) {
+          const key = (item.Name || "").toLowerCase();
+          if (!seen.has(key)) { seen.add(key); allResults.push(item); }
+          if (allResults.length >= limit) break;
+        }
         if (allResults.length >= limit) break;
-        try {
-          const raw = await callFragella("/fragrances", { search: term, limit: 20 });
-          for (const item of (Array.isArray(raw) ? raw : [])) {
-            const key = (item.Name || "").toLowerCase();
-            if (!seen.has(key)) { seen.add(key); allResults.push(item); }
-            if (allResults.length >= limit) break;
-          }
-        } catch (e) { console.error(`[SPRITZFIND] Trending "${term}" failed:`, e.message); }
       }
-      data = await enrichWithEbay(allResults);
+      
+      // Skip eBay for trending — too slow for initial load
+      data = allResults.map(f => formatFragrance(f, []));
 
     } else if (action === "notes" && query) {
       data = await callFragella("/notes", { search: query, limit });
