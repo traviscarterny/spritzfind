@@ -104,17 +104,17 @@
     .section-sub { font-size: 0.85rem; color: var(--muted); letter-spacing: 0.3px; line-height: 1.7; margin-bottom: 36px; max-width: 540px; }
 
     /* ===== SEARCH ===== */
-    .search-row { display: flex; max-width: 900px; margin: 0 0 24px; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
-    .search-bar { flex: 1; display: flex; background: var(--surface); border: 1px solid var(--border); border-right: none; border-radius: 8px 0 0 8px; }
+    .search-row { display: flex; max-width: 900px; margin: 0 0 24px; }
+    .search-bar { flex: 1; display: flex; background: var(--surface); border: 2px solid #1a1a1a; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 20px rgba(0,0,0,0.06); }
     .search-bar input { flex: 1; background: transparent; border: none; color: var(--text); font-family: 'Outfit', sans-serif; font-size: 0.9rem; font-weight: 500; padding: 16px 20px; outline: none; letter-spacing: 0.3px; }
     .search-bar input::placeholder { color: var(--muted); font-weight: 400; }
-    .search-go-btn { background: var(--accent); color: white; border: none; font-family: 'GFS Didot', serif; font-size: 1rem; font-weight: 600; letter-spacing: 2px; padding: 0 32px; cursor: pointer; transition: background 0.15s; border-radius: 0 8px 8px 0; }
+    .search-go-btn { background: var(--accent); color: white; border: none; font-family: 'GFS Didot', serif; font-size: 1rem; font-weight: 600; letter-spacing: 2px; padding: 0 32px; cursor: pointer; transition: background 0.15s; border-radius: 0 6px 6px 0; margin: -1px; }
     .search-go-btn:hover { background: #4a86bd; }
     .search-go-btn:disabled { background: var(--muted); cursor: not-allowed; }
 
     /* ===== FILTERS ===== */
     .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; justify-content: center; }
-    .filter-btn { background: transparent; border: 1px solid var(--border); color: var(--muted); font-family: 'Outfit', sans-serif; font-size: 0.7rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; padding: 7px 16px; cursor: pointer; transition: all 0.15s; border-radius: 4px; }
+    .filter-btn { background: transparent; border: 2px solid #1a1a1a; color: var(--muted); font-family: 'Outfit', sans-serif; font-size: 0.7rem; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; padding: 7px 16px; cursor: pointer; transition: all 0.15s; border-radius: 4px; }
     .filter-btn:hover, .filter-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(91,155,213,0.05); }
 
     /* ===== STATUS ===== */
@@ -253,8 +253,8 @@
       .section-wrap { padding: 32px 16px 60px; }
       .hero-img { display: none; }
       .search-row { flex-direction: column; }
-      .search-go-btn { padding: 14px; border-radius: 0 0 8px 8px; }
-      .search-bar { border-radius: 8px 8px 0 0; border-right: 1px solid var(--border); }
+      .search-go-btn { padding: 14px; border-radius: 0 0 6px 6px; }
+      .search-bar { border-radius: 8px; }
       .grid { grid-template-columns: 1fr 1fr; gap: 12px; }
       .card-img-wrap { height: 180px; }
       .card-body { padding: 14px; }
@@ -330,6 +330,17 @@ const ALL_SOURCES = [
 
 const BRAND_FILTERS = [
   {label: "ALL", query: ""},
+  {label: "🔥 POPULAR", query: "__popular__"},
+  {label: "👔 MEN", query: "__men__"},
+  {label: "👗 WOMEN", query: "__women__"},
+  {label: "⚡ UNISEX", query: "__unisex__"},
+  {label: "---seasons", break: true},
+  {label: "🌸 SPRING", query: "__spring__"},
+  {label: "☀️ SUMMER", query: "__summer__"},
+  {label: "🍂 FALL", query: "__fall__"},
+  {label: "❄️ WINTER", query: "__winter__"},
+  // Brand heading
+  {label: "Browse by Brand", heading: true},
   // === TIER 1: Affordable ($20–$80) ===
   {label: "💲 AFFORDABLE", tier: true},
   {label: "CALVIN KLEIN", query: "Calvin Klein fragrance"},
@@ -742,14 +753,18 @@ function renderFindPage() {
     <div class="search-row">
       <div class="search-bar">
         <input id="search-input" value="${esc(searchQuery)}" placeholder="Search by brand, fragrance name, or notes..."/>
+        <button class="search-go-btn" data-action="search" ${dropsLoading?"disabled":""}>${dropsLoading?"Searching...":"SEARCH"}</button>
       </div>
-      <button class="search-go-btn" data-action="search" ${dropsLoading?"disabled":""}>${dropsLoading?"Searching...":"SEARCH"}</button>
     </div>
-    <div style="text-align:center;margin-top:16px;margin-bottom:8px;font-size:0.65rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--accent)">Browse by Brand & Scent</div>
+    <div style="text-align:center;margin-top:16px;margin-bottom:8px;font-size:0.9rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--accent)">Browse by Filter</div>
     <div class="filters">
       ${BRAND_FILTERS.map((cat,idx) =>
-        cat.tier
-        ? `<div style="width:100%;margin:10px 0 6px;padding:6px 0;border-bottom:1px solid var(--border);font-size:0.65rem;font-weight:600;letter-spacing:2px;color:var(--accent-gold);text-align:left">${esc(cat.label)}</div>`
+        cat.heading
+        ? `<div style="width:100%;margin:40px 0 8px;padding-top:20px;border-top:1px solid var(--border);font-size:0.9rem;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--accent);text-align:center">${esc(cat.label)}</div>`
+        : cat.tier
+        ? `<div style="width:100%;margin:14px 0 8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:0.91rem;font-weight:600;letter-spacing:3px;color:var(--accent-gold);text-align:center">${esc(cat.label)}</div>`
+        : cat.break
+        ? `<div style="width:100%;height:0"></div>`
         : `<button class="filter-btn ${activeCategory===cat.label?"active":""}" data-action="category" data-idx="${idx}">${esc(cat.label)}</button>`
       ).join("")}
     </div>
@@ -865,6 +880,12 @@ document.addEventListener("click", function(e) {
     if (cat.query === "") {
       searchQuery = "";
       doSearch("");
+    } else if (cat.query === "__popular__") {
+      searchQuery = "";
+      doSearchPopular();
+    } else if (cat.query.startsWith("__") && cat.query.endsWith("__")) {
+      searchQuery = "";
+      doSearchFiltered(cat.query.replace(/__/g, ""));
     } else {
       searchQuery = cat.query;
       doSearch(cat.query);
@@ -923,6 +944,151 @@ async function doSearch(q) {
     console.error("[SPRITZFIND] Fetch error:", e);
     drops = DEFAULT_DROPS;
     dropsError = "Search unavailable. Showing featured fragrances.";
+  }
+
+  dropsLoading = false;
+  dropsUpdated = new Date().toLocaleTimeString();
+  render();
+}
+
+async function doSearchFiltered(filterType) {
+  dropsLoading = true;
+  dropsError = null;
+  dropsPage = 1;
+  hasMore = false;
+  lastQuery = "__" + filterType + "__";
+  render();
+
+  // Gender filters — search popular terms then filter by gender
+  const genderMap = { men: "men", women: "women", unisex: "unisex" };
+  const seasonMap = { spring: "spring", summer: "summer", fall: "fall", winter: "winter" };
+
+  const isGender = genderMap[filterType];
+  const isSeason = seasonMap[filterType];
+
+  try {
+    let searchTerms;
+    if (isGender) {
+      steps = [{label:`Finding best ${filterType}'s fragrances`,status:"active"}];
+      searchTerms = filterType === "men"
+        ? ["cologne men", "eau de toilette men", "parfum homme", "mens fragrance best", "sport cologne"]
+        : filterType === "women"
+        ? ["perfume women", "eau de parfum femme", "womens fragrance best", "floral perfume", "sweet perfume"]
+        : ["unisex fragrance", "unisex parfum", "gender neutral cologne", "unisex niche", "shared fragrance"];
+    } else if (isSeason) {
+      steps = [{label:`Finding best ${filterType} fragrances`,status:"active"}];
+      const seasonTerms = {
+        spring: ["fresh fragrance", "light cologne", "floral perfume", "citrus fragrance", "green fragrance"],
+        summer: ["summer cologne", "aquatic fragrance", "fresh citrus perfume", "beach fragrance", "light eau de toilette"],
+        fall: ["fall fragrance", "warm spicy cologne", "amber perfume", "woody fragrance", "tobacco vanilla"],
+        winter: ["winter cologne", "oud fragrance", "warm perfume", "smoky fragrance", "incense cologne"],
+      };
+      searchTerms = seasonTerms[filterType] || ["fragrance"];
+    }
+
+    const allResults = [];
+    const seen = new Set();
+
+    for (const term of searchTerms) {
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({action: "search", query: term, limit: 20}),
+        });
+        const json = await res.json();
+        if (json.data) {
+          for (const item of json.data) {
+            const key = (item.name || "").toLowerCase();
+            // For gender, filter to matching gender
+            if (isGender && item.gender && item.gender.toLowerCase() !== filterType) continue;
+            if (!seen.has(key)) { seen.add(key); allResults.push(item); }
+          }
+        }
+      } catch(e) {}
+    }
+
+    // Sort by popularity (highest first), then by season score if seasonal
+    if (isSeason) {
+      allResults.sort((a, b) => {
+        const aScore = (a.seasonRanking || []).find(s => s.name === filterType)?.score || 0;
+        const bScore = (b.seasonRanking || []).find(s => s.name === filterType)?.score || 0;
+        return bScore - aScore || (b.popularity || 0) - (a.popularity || 0);
+      });
+    } else {
+      allResults.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+    }
+
+    if (allResults.length > 0) {
+      drops = allResults;
+      steps = [{label:`Finding best ${filterType} fragrances`,status:"done",count:allResults.length}];
+      if (allResults.length >= 15) hasMore = true;
+    } else {
+      drops = DEFAULT_DROPS;
+      dropsError = `No ${filterType} fragrances found. Showing featured.`;
+    }
+  } catch(e) {
+    console.error("[SPRITZFIND] Filtered search error:", e);
+    drops = DEFAULT_DROPS;
+  }
+
+  dropsLoading = false;
+  dropsUpdated = new Date().toLocaleTimeString();
+  render();
+}
+
+async function doSearchPopular() {
+  dropsLoading = true;
+  dropsError = null;
+  steps = [{label:"Finding most popular",status:"active"}];
+  dropsPage = 1;
+  hasMore = false;
+  lastQuery = "__popular__";
+  render();
+
+  try {
+    // Search the most iconic/popular fragrance names directly
+    const popularSearches = [
+      "Sauvage", "Bleu de Chanel", "Aventus", "Acqua di Gio",
+      "Eros", "Y Yves Saint Laurent", "Good Girl", "Light Blue",
+      "Baccarat Rouge", "Black Opium", "La Vie Est Belle", "Coco Mademoiselle",
+      "1 Million", "Le Male", "Ombre Leather", "Dylan Blue",
+    ];
+
+    const allResults = [];
+    const seen = new Set();
+
+    for (const term of popularSearches) {
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({action: "search", query: term, limit: 5}),
+        });
+        const json = await res.json();
+        if (json.data) {
+          for (const item of json.data) {
+            const key = (item.name || "").toLowerCase();
+            if (!seen.has(key)) { seen.add(key); allResults.push(item); }
+          }
+        }
+      } catch(e) {}
+    }
+
+    // Sort by popularity score (highest first)
+    allResults.sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+
+    if (allResults.length > 0) {
+      drops = allResults;
+      steps = [{label:"Finding most popular",status:"done",count:allResults.length}];
+      if (allResults.length >= 15) hasMore = true;
+    } else {
+      drops = DEFAULT_DROPS;
+      dropsError = "Could not load popular fragrances. Showing featured.";
+    }
+  } catch(e) {
+    console.error("[SPRITZFIND] Popular fetch error:", e);
+    drops = DEFAULT_DROPS;
   }
 
   dropsLoading = false;
