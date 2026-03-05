@@ -769,7 +769,7 @@ function renderFindPage() {
       ).join("")}
     </div>
     ${dropsError ? `<div class="error-msg">${esc(dropsError)}</div>` : ""}
-    <div class="status-bar">
+    <div class="status-bar" id="results-top">
       <div class="pulse-dot"></div>
       ${dropsLoading ? "Searching retailers..." : `${filtered.length} fragrances found`}
       ${dropsUpdated ? `<span style="margin-left:auto">Updated ${esc(dropsUpdated)}</span>` : ""}
@@ -905,6 +905,27 @@ document.addEventListener("click", function(e) {
 // ===== ASYNC ACTIONS =====
 const API_URL = "/.netlify/functions/fragella";
 
+function scrollToResults() {
+  setTimeout(() => {
+    const el = document.getElementById("results-top");
+    if (!el) return;
+    const targetY = el.getBoundingClientRect().top + window.scrollY - 80;
+    const startY = window.scrollY;
+    const distance = targetY - startY;
+    if (Math.abs(distance) < 50) return;
+    const duration = 1200;
+    let start = null;
+    function step(ts) {
+      if (!start) start = ts;
+      const progress = Math.min((ts - start) / duration, 1);
+      const ease = progress < 0.5 ? 2 * progress * progress : -1 + (4 - 2 * progress) * progress;
+      window.scrollTo(0, startY + distance * ease);
+      if (progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }, 200);
+}
+
 async function doSearch(q) {
   dropsLoading = true;
   dropsError = null;
@@ -913,6 +934,7 @@ async function doSearch(q) {
   hasMore = false;
   lastQuery = q || "__all__";
   render();
+  scrollToResults();
 
   try {
     const action = q && q.trim() ? "search" : "trending";
@@ -958,11 +980,10 @@ async function doSearchFiltered(filterType) {
   hasMore = false;
   lastQuery = "__" + filterType + "__";
   render();
+  scrollToResults();
 
-  // Gender filters — search popular terms then filter by gender
   const genderMap = { men: "men", women: "women", unisex: "unisex" };
   const seasonMap = { spring: "spring", summer: "summer", fall: "fall", winter: "winter" };
-
   const isGender = genderMap[filterType];
   const isSeason = seasonMap[filterType];
 
@@ -971,17 +992,36 @@ async function doSearchFiltered(filterType) {
     if (isGender) {
       steps = [{label:`Finding best ${filterType}'s fragrances`,status:"active"}];
       searchTerms = filterType === "men"
-        ? ["cologne men", "eau de toilette men", "parfum homme", "mens fragrance best", "sport cologne"]
+        ? ["Dior Sauvage", "Bleu de Chanel", "Acqua di Gio", "Versace Eros", "YSL Y",
+           "Prada Luna Rossa", "Dolce Gabbana The One", "Hugo Boss Bottled", "Jean Paul Gaultier Le Male",
+           "Creed Aventus", "Tom Ford Oud Wood", "Valentino Uomo", "Mont Blanc Explorer", "Armani Code",
+           "Gucci Guilty", "Nautica Voyage", "Calvin Klein Eternity", "Azzaro Wanted", "Dylan Blue",
+           "Parfums de Marly Layton"]
         : filterType === "women"
-        ? ["perfume women", "eau de parfum femme", "womens fragrance best", "floral perfume", "sweet perfume"]
-        : ["unisex fragrance", "unisex parfum", "gender neutral cologne", "unisex niche", "shared fragrance"];
+        ? ["Chanel Coco Mademoiselle", "Black Opium YSL", "La Vie Est Belle Lancome", "Good Girl Carolina Herrera",
+           "Miss Dior", "Chanel No 5", "Flowerbomb Viktor Rolf", "Libre YSL", "Mon Paris YSL",
+           "Gucci Bloom", "Marc Jacobs Daisy", "Burberry Her", "Jimmy Choo", "Valentino Donna",
+           "Chloe perfume", "Dolce Gabbana Light Blue women", "Prada Candy", "Lancôme Idôle",
+           "Baccarat Rouge 540", "Givenchy Irresistible"]
+        : ["Le Labo Santal 33", "Maison Margiela Replica", "Byredo Gypsy Water", "Tom Ford Tobacco Vanille",
+           "Jo Malone Wood Sage", "Diptyque Philosykos", "MFK Baccarat Rouge", "Escentric Molecules",
+           "Juliette Has a Gun", "Clean Reserve", "Atelier Cologne", "Comme des Garcons",
+           "Maison Francis Kurkdjian Aqua", "Byredo Bal d'Afrique", "Le Labo Rose 31"];
     } else if (isSeason) {
       steps = [{label:`Finding best ${filterType} fragrances`,status:"active"}];
       const seasonTerms = {
-        spring: ["fresh fragrance", "light cologne", "floral perfume", "citrus fragrance", "green fragrance"],
-        summer: ["summer cologne", "aquatic fragrance", "fresh citrus perfume", "beach fragrance", "light eau de toilette"],
-        fall: ["fall fragrance", "warm spicy cologne", "amber perfume", "woody fragrance", "tobacco vanilla"],
-        winter: ["winter cologne", "oud fragrance", "warm perfume", "smoky fragrance", "incense cologne"],
+        spring: ["Chanel Chance Eau Tendre", "Dolce Gabbana Light Blue", "Marc Jacobs Daisy", "Jo Malone English Pear",
+                 "Acqua di Gio", "Gucci Bloom", "Clean Reserve Skin", "Chloe perfume",
+                 "YSL Libre", "Versace Bright Crystal", "Burberry Her", "Issey Miyake"],
+        summer: ["Versace Dylan Blue", "Dolce Gabbana Light Blue", "Acqua di Gio Profondo", "Nautica Voyage",
+                 "Davidoff Cool Water", "Mont Blanc Explorer", "Chanel Allure Homme Sport",
+                 "Versace Pour Homme", "Calvin Klein CK One", "Issey Miyake L'Eau", "Bvlgari Aqva", "Prada Luna Rossa"],
+        fall: ["Dior Sauvage", "Spicebomb Viktor Rolf", "Tom Ford Tobacco Vanille", "Valentino Uomo",
+               "Armani Code", "Prada Luna Rossa Carbon", "YSL La Nuit de L'Homme", "Maison Margiela By the Fireplace",
+               "Gucci Guilty Absolute", "Dolce Gabbana The One", "Azzaro Wanted", "Parfums de Marly Layton"],
+        winter: ["Creed Aventus", "Tom Ford Oud Wood", "Parfums de Marly Layton", "Initio Oud for Greatness",
+                 "MFK Baccarat Rouge 540", "Dior Homme Intense", "JPG Le Male Le Parfum", "Valentino Uomo Intense",
+                 "Amouage Interlude", "Xerjoff Naxos", "Givenchy Gentleman", "YSL Y Le Parfum"],
       };
       searchTerms = seasonTerms[filterType] || ["fragrance"];
     }
@@ -994,7 +1034,7 @@ async function doSearchFiltered(filterType) {
         const res = await fetch(API_URL, {
           method: "POST",
           headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({action: "search", query: term, limit: 20}),
+          body: JSON.stringify({action: "search", query: term, limit: 5}),
         });
         const json = await res.json();
         if (json.data) {
@@ -1002,6 +1042,8 @@ async function doSearchFiltered(filterType) {
             const key = (item.name || "").toLowerCase();
             // For gender, filter to matching gender
             if (isGender && item.gender && item.gender.toLowerCase() !== filterType) continue;
+            // Only include popular fragrances (70+ popularity)
+            if ((item.popularity || 0) < 70) continue;
             if (!seen.has(key)) { seen.add(key); allResults.push(item); }
           }
         }
@@ -1045,6 +1087,7 @@ async function doSearchPopular() {
   hasMore = false;
   lastQuery = "__popular__";
   render();
+  scrollToResults();
 
   try {
     // Search the most iconic/popular fragrance names directly
