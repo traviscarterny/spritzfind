@@ -332,8 +332,6 @@ const BRAND_FILTERS = [
   {label: "ALL", query: ""},
   // === TIER 1: Affordable ($20–$80) ===
   {label: "💲 AFFORDABLE — Under $80", tier: true},
-  {label: "VERSACE", query: "Versace fragrance"},
-  {label: "DOLCE & GABBANA", query: "Dolce Gabbana fragrance"},
   {label: "CALVIN KLEIN", query: "Calvin Klein fragrance"},
   {label: "NAUTICA", query: "Nautica fragrance"},
   {label: "DAVIDOFF", query: "Davidoff fragrance"},
@@ -355,10 +353,12 @@ const BRAND_FILTERS = [
   {label: "JAGUAR", query: "Jaguar fragrance"},
   {label: "VINCE CAMUTO", query: "Vince Camuto fragrance"},
   {label: "MICHAEL KORS", query: "Michael Kors fragrance"},
-  {label: "JIMMY CHOO", query: "Jimmy Choo fragrance"},
   {label: "DUNHILL", query: "Dunhill fragrance"},
   // === TIER 2: Designer ($80–$200) ===
   {label: "💎 DESIGNER — $80 to $200", tier: true},
+  {label: "VERSACE", query: "Versace fragrance"},
+  {label: "DOLCE & GABBANA", query: "Dolce Gabbana fragrance"},
+  {label: "JIMMY CHOO", query: "Jimmy Choo fragrance"},
   {label: "DIOR", query: "Dior fragrance"},
   {label: "CHANEL", query: "Chanel fragrance"},
   {label: "YSL", query: "Yves Saint Laurent fragrance"},
@@ -696,7 +696,7 @@ function renderDropCard(drop, i) {
       <div class="card-name">${esc(drop.name)}</div>
       ${drop.notes ? `<div class="card-notes">${esc(drop.notes)}</div>` : ""}
       <div class="card-meta">
-        ${drop.size ? `<div class="meta-row"><span class="meta-label">Type</span><span class="meta-value">${esc(drop.size)}</span></div>` : ""}
+        ${drop.size || drop.bottleSize ? `<div class="meta-row"><span class="meta-label">${drop.bottleSize ? "Size" : "Type"}</span><span class="meta-value">${drop.bottleSize ? esc(drop.bottleSize) + (drop.size ? ` · ${esc(drop.size)}` : "") : esc(drop.size)}</span></div>` : ""}
         <div class="meta-row"><span class="meta-label">Retail</span><span class="price">${esc(drop.retail||"—")}</span></div>
       </div>
       ${drop.popularity ? `<div class="pop-bar"><div class="pop-fill" style="width:${drop.popularity}%"></div></div><div class="pop-label"><span>Popularity</span><span>${drop.popularity}/100</span></div>` : ""}
@@ -864,9 +864,7 @@ document.addEventListener("click", function(e) {
     activeCategory = cat.label;
     if (cat.query === "") {
       searchQuery = "";
-      drops = DEFAULT_DROPS;
-      dropsUpdated = new Date().toLocaleTimeString();
-      render();
+      doSearch("");
     } else {
       searchQuery = cat.query;
       doSearch(cat.query);
