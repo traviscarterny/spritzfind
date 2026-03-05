@@ -870,7 +870,7 @@ document.addEventListener("click", function(e) {
       doSearch(cat.query);
     }
   }
-  else if (action === "load-more") { /* doLoadMore() placeholder */ }
+  else if (action === "load-more") { doLoadMore(); }
   else if (action === "chat-toggle") { chatOpen = !chatOpen; render(); }
   else if (action === "chat-close") { chatOpen = false; render(); }
   else if (action === "chat-clear") {
@@ -913,6 +913,8 @@ async function doSearch(q) {
     } else if (json.data && json.data.length > 0) {
       drops = json.data;
       steps = [{label:"Searching retailers",status:"done",count:json.data.length}];
+      // If we got a good number of results, there might be more
+      if (json.data.length >= 15) hasMore = true;
     } else {
       drops = DEFAULT_DROPS;
       dropsError = `No results for "${q}". Showing featured fragrances.`;
@@ -925,6 +927,53 @@ async function doSearch(q) {
 
   dropsLoading = false;
   dropsUpdated = new Date().toLocaleTimeString();
+  render();
+}
+
+async function doLoadMore() {
+  if (!lastQuery || dropsLoadingMore || !hasMore) return;
+  dropsLoadingMore = true;
+  render();
+  
+  const nextPage = dropsPage + 1;
+  const q = lastQuery === "__all__" ? "" : lastQuery;
+  
+  try {
+    // Search with different variations to get fresh results
+    const suffixes = ["parfum", "toilette", "cologne", "intense", "night", "sport", "fresh", "oud"];
+    const suffix = suffixes[(nextPage - 2) % suffixes.length] || "";
+    const searchQuery = q ? `${q} ${suffix}`.trim() : suffixes[(nextPage - 2) % suffixes.length];
+    
+    const res = await fetch(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "search", query: searchQuery, limit: 30 }),
+    });
+    const json = await res.json();
+    
+    if (json.data && json.data.length > 0) {
+      // Dedupe against existing drops
+      const seen = new Set(drops.map(d => (d.name || "").toLowerCase()));
+      const newDrops = json.data.filter(d => !seen.has((d.name || "").toLowerCase()));
+      
+      if (newDrops.length > 0) {
+        drops = [...drops, ...newDrops];
+        dropsPage = nextPage;
+      } else {
+        hasMore = false;
+      }
+      
+      // Stop after a few pages
+      if (nextPage >= 5) hasMore = false;
+    } else {
+      hasMore = false;
+    }
+  } catch(e) {
+    console.error("[SPRITZFIND] Load more error:", e);
+    hasMore = false;
+  }
+  
+  dropsLoadingMore = false;
   render();
 }
 
