@@ -699,7 +699,8 @@ function renderPriceCompare(prices, drop, cardIdx) {
 
 // --- Drop Card ---
 function renderDropCard(drop, i) {
-  return `<div class="card">
+  const slug = drop.slug || (drop.name||"").toLowerCase().replace(/['']/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+  return `<div class="card" data-action="card-detail" data-slug="${esc(slug)}" style="cursor:pointer">
     ${renderDropImage(drop)}
     <div class="card-body">
       ${drop.badge ? `<div class="badge ${BADGE_MAP[drop.badge]||"badge-new"}">${BADGE_LABELS[drop.badge]||esc(drop.badge)}</div>` : ""}
@@ -843,6 +844,16 @@ function attachEvents() {
 
   const cb = document.getElementById("chat-bottom");
   if (cb) cb.scrollIntoView({behavior:"smooth"});
+
+  // Card clicks — navigate to detail page
+  document.querySelectorAll('.card[data-action="card-detail"]').forEach(card => {
+    card.addEventListener("click", function(e) {
+      // Don't navigate if clicking a link, button, or the price toggle
+      if (e.target.closest('a') || e.target.closest('button') || e.target.closest('.price-toggle')) return;
+      const slug = this.dataset.slug;
+      if (slug) window.location.href = "/fragrance/" + slug;
+    });
+  });
 }
 
 // ===== GLOBAL CLICK HANDLER =====
@@ -890,6 +901,10 @@ document.addEventListener("click", function(e) {
       searchQuery = cat.query;
       doSearch(cat.query);
     }
+  }
+  else if (action === "card-detail") {
+    const slug = btn.dataset.slug;
+    if (slug) window.location.href = "/fragrance/" + slug;
   }
   else if (action === "load-more") { doLoadMore(); }
   else if (action === "chat-toggle") { chatOpen = !chatOpen; render(); }
