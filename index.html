@@ -696,7 +696,7 @@ function renderDropCard(drop, i) {
       <div class="card-name">${esc(drop.name)}</div>
       ${drop.notes ? `<div class="card-notes">${esc(drop.notes)}</div>` : ""}
       <div class="card-meta">
-        ${drop.size ? `<div class="meta-row"><span class="meta-label">Size</span><span class="meta-value">${esc(drop.size)}</span></div>` : ""}
+        ${drop.size ? `<div class="meta-row"><span class="meta-label">Type</span><span class="meta-value">${esc(drop.size)}</span></div>` : ""}
         <div class="meta-row"><span class="meta-label">Retail</span><span class="price">${esc(drop.retail||"—")}</span></div>
       </div>
       ${drop.popularity ? `<div class="pop-bar"><div class="pop-fill" style="width:${drop.popularity}%"></div></div><div class="pop-label"><span>Popularity</span><span>${drop.popularity}/100</span></div>` : ""}

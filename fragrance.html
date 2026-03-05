@@ -280,7 +280,7 @@ function renderDetail(frag){
   if(frag.badge)html+=`<div class="badge ${BADGE_MAP[frag.badge]||"badge-new"}">${BADGE_LABELS[frag.badge]||esc(frag.badge)}</div>`;
   html+=`<div class="detail-brand">${esc(frag.brand)}</div><div class="detail-name">${esc(frag.name)}</div>`;
   if(frag.notes)html+=`<div class="detail-notes">${esc(frag.notes)}</div>`;
-  if(frag.size)html+=`<div class="detail-size">${esc(frag.size)}</div>`;
+  if(frag.size)html+=`<div class="detail-size">Type: ${esc(frag.size)}</div>`;
   html+=`<div class="detail-meta"><div class="detail-meta-row"><span class="detail-meta-label">Retail</span><span class="detail-meta-value price">${esc(frag.retail||"—")}</span></div></div>`;
   if(frag.popularity){html+=`<div class="pop-section"><div class="pop-bar"><div class="pop-fill" style="width:${frag.popularity}%"></div></div><div class="pop-label"><span>Popularity</span><span>${frag.popularity}/100</span></div></div>`}
   html+=`</div></div>`;
@@ -319,7 +319,7 @@ async function loadFragrance(){
     const res=await fetch(API_URL,{
       method:"POST",
       headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({action:"search",query:query,limit:10}),
+      body:JSON.stringify({action:"search",query:query,limit:20}),
     });
     const json=await res.json();
 
