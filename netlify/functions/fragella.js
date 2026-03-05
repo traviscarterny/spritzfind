@@ -257,36 +257,83 @@ exports.handler = async function (event) {
     let data;
 
     if (action === "search" && query) {
+      const allResults = [];
+      const seen = new Set();
+      
+      // Primary search
       const raw = await callFragella("/fragrances", { search: query, limit });
-      let results = Array.isArray(raw) ? raw : [];
-      if (results.length > 0 && results.length < limit && results.length === 20) {
-        try {
-          const raw2 = await callFragella("/fragrances", { search: query + " eau", limit: 30 });
-          const items2 = Array.isArray(raw2) ? raw2 : [];
-          const seen = new Set(results.map(r => (r.Name || "").toLowerCase()));
-          for (const item of items2) {
-            if (!seen.has((item.Name || "").toLowerCase())) { results.push(item); seen.add((item.Name || "").toLowerCase()); }
-            if (results.length >= limit) break;
-          }
-        } catch (e) {}
+      for (const item of (Array.isArray(raw) ? raw : [])) {
+        const key = (item.Name || "").toLowerCase();
+        if (!seen.has(key)) { seen.add(key); allResults.push(item); }
       }
-      data = await enrichWithEbay(results);
+
+      // If we got capped at 20, try supplemental searches
+      if (allResults.length < limit && allResults.length >= 15) {
+        const supplements = [
+          `${query} pour homme`,
+          `${query} pour femme`,
+          `${query} eau de parfum`,
+          `${query} intense`,
+        ];
+        for (const term of supplements) {
+          if (allResults.length >= limit) break;
+          try {
+            const raw2 = await callFragella("/fragrances", { search: term, limit: 20 });
+            for (const item of (Array.isArray(raw2) ? raw2 : [])) {
+              const key = (item.Name || "").toLowerCase();
+              if (!seen.has(key)) { seen.add(key); allResults.push(item); }
+              if (allResults.length >= limit) break;
+            }
+          } catch (e) {}
+        }
+      }
+
+      data = await enrichWithEbay(allResults);
 
     } else if (action === "brand" && brand) {
-      const raw = await callFragella(`/brands/${encodeURIComponent(brand)}`, { limit });
-      let results = Array.isArray(raw) ? raw : [];
-      if (results.length > 0 && results.length < limit && results.length === 20) {
+      // Cast a wide net — search multiple variations to get as many results as possible
+      const searchTerms = [
+        brand,
+        `${brand} pour homme`,
+        `${brand} pour femme`,
+        `${brand} eau de parfum`,
+        `${brand} eau de toilette`,
+        `${brand} cologne`,
+        `${brand} intense`,
+      ];
+      
+      const allResults = [];
+      const seen = new Set();
+
+      // First try the brand endpoint
+      try {
+        const raw = await callFragella(`/brands/${encodeURIComponent(brand)}`, { limit: 20 });
+        for (const item of (Array.isArray(raw) ? raw : [])) {
+          const key = (item.Name || "").toLowerCase();
+          if (!seen.has(key)) { seen.add(key); allResults.push(item); }
+        }
+      } catch (e) {}
+
+      // Then supplement with multiple searches
+      for (const term of searchTerms) {
+        if (allResults.length >= limit) break;
         try {
-          const raw2 = await callFragella("/fragrances", { search: brand, limit: 30 });
-          const items2 = Array.isArray(raw2) ? raw2 : [];
-          const seen = new Set(results.map(r => (r.Name || "").toLowerCase()));
-          for (const item of items2) {
-            if (!seen.has((item.Name || "").toLowerCase())) { results.push(item); seen.add((item.Name || "").toLowerCase()); }
-            if (results.length >= limit) break;
+          const raw = await callFragella("/fragrances", { search: term, limit: 20 });
+          for (const item of (Array.isArray(raw) ? raw : [])) {
+            const key = (item.Name || "").toLowerCase();
+            // Only include results that actually match the brand
+            const itemBrand = (item.Brand || "").toLowerCase();
+            const searchBrand = brand.toLowerCase();
+            if (!seen.has(key) && (itemBrand.includes(searchBrand) || searchBrand.includes(itemBrand))) {
+              seen.add(key);
+              allResults.push(item);
+            }
+            if (allResults.length >= limit) break;
           }
         } catch (e) {}
       }
-      data = await enrichWithEbay(results);
+
+      data = await enrichWithEbay(allResults);
 
     } else if (action === "similar" && name) {
       const raw = await callFragella("/fragrances/similar", { name, limit });
