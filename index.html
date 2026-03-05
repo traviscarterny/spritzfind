@@ -905,7 +905,10 @@ document.addEventListener("click", function(e) {
 // ===== ASYNC ACTIONS =====
 const API_URL = "/.netlify/functions/fragella";
 
+let skipNextScroll = true;
+
 function scrollToResults() {
+  if (skipNextScroll) { skipNextScroll = false; return; }
   setTimeout(() => {
     const el = document.getElementById("results-top");
     if (!el) return;
@@ -1029,25 +1032,25 @@ async function doSearchFiltered(filterType) {
     const allResults = [];
     const seen = new Set();
 
-    for (const term of searchTerms) {
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({action: "search", query: term, limit: 5}),
-        });
-        const json = await res.json();
-        if (json.data) {
-          for (const item of json.data) {
-            const key = (item.name || "").toLowerCase();
-            // For gender, filter to matching gender
-            if (isGender && item.gender && item.gender.toLowerCase() !== filterType) continue;
-            // Only include popular fragrances (70+ popularity)
-            if ((item.popularity || 0) < 70) continue;
-            if (!seen.has(key)) { seen.add(key); allResults.push(item); }
-          }
+    // Fire all searches in parallel for speed
+    const fetches = searchTerms.map(term =>
+      fetch(API_URL, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({action: "search", query: term, limit: 5}),
+      }).then(r => r.json()).catch(() => ({data:[]}))
+    );
+    const responses = await Promise.all(fetches);
+
+    for (const json of responses) {
+      if (json.data) {
+        for (const item of json.data) {
+          const key = (item.name || "").toLowerCase();
+          if (isGender && item.gender && item.gender.toLowerCase() !== filterType) continue;
+          if ((item.popularity || 0) < 70) continue;
+          if (!seen.has(key)) { seen.add(key); allResults.push(item); }
         }
-      } catch(e) {}
+      }
     }
 
     // Sort by popularity (highest first), then by season score if seasonal
@@ -1101,21 +1104,23 @@ async function doSearchPopular() {
     const allResults = [];
     const seen = new Set();
 
-    for (const term of popularSearches) {
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({action: "search", query: term, limit: 5}),
-        });
-        const json = await res.json();
-        if (json.data) {
-          for (const item of json.data) {
-            const key = (item.name || "").toLowerCase();
-            if (!seen.has(key)) { seen.add(key); allResults.push(item); }
-          }
+    // Fire all searches in parallel for speed
+    const fetches = popularSearches.map(term =>
+      fetch(API_URL, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({action: "search", query: term, limit: 5}),
+      }).then(r => r.json()).catch(() => ({data:[]}))
+    );
+    const responses = await Promise.all(fetches);
+
+    for (const json of responses) {
+      if (json.data) {
+        for (const item of json.data) {
+          const key = (item.name || "").toLowerCase();
+          if (!seen.has(key)) { seen.add(key); allResults.push(item); }
         }
-      } catch(e) {}
+      }
     }
 
     // Sort by popularity score (highest first)
@@ -1156,7 +1161,7 @@ async function doLoadMore() {
     const res = await fetch(API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "search", query: searchQuery, limit: 30 }),
+      body: JSON.stringify({ action: "search", query: searchQuery, limit: 50 }),
     });
     const json = await res.json();
     
