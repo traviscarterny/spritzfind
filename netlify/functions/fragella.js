@@ -153,7 +153,7 @@ function buildPriceLinks(fragrance, ebayResults) {
     prices.push({
       store: best.authenticity ? "eBay ✓" : "eBay",
       storeId: "ebay",
-      price: `$${Math.round(best.price)}`,
+      price: `from $${Math.round(best.price)}`,
       url: ebaySearchUrl,
     });
   } else {
