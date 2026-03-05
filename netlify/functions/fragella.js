@@ -1,8 +1,14 @@
 // SpritzFind API — Netlify Function
-// Proxies requests to Fragella API and formats data for the frontend
+// Proxies requests to Fragella API + eBay Browse API for real prices
 
-const FRAGELLA_KEY = process.env.FRAGELLA_API_KEY || "e49d480fc7f564d234dcb1b222266f544e451b577c8646f54dad84c57ef44010";
+const FRAGELLA_KEY = process.env.FRAGELLA_API_KEY;
 const FRAGELLA_BASE = "https://api.fragella.com/api/v1";
+
+// eBay API credentials
+const EBAY_CLIENT_ID = process.env.EBAY_CLIENT_ID;
+const EBAY_CLIENT_SECRET = process.env.EBAY_CLIENT_SECRET;
+const EBAY_AUTH_URL = "https://api.ebay.com/identity/v1/oauth2/token";
+const EBAY_BROWSE_URL = "https://api.ebay.com/buy/browse/v1/item_summary/search";
 
 const HEADERS = {
   "Access-Control-Allow-Origin": "*",
@@ -10,182 +16,238 @@ const HEADERS = {
   "Content-Type": "application/json",
 };
 
-// Build affiliate links for price comparison
-function buildPriceLinks(fragrance) {
+// ===== eBay API =====
+let ebayToken = null;
+let ebayTokenExpiry = 0;
+
+async function getEbayToken() {
+  if (ebayToken && Date.now() < ebayTokenExpiry - 60000) return ebayToken;
+
+  const credentials = Buffer.from(`${EBAY_CLIENT_ID}:${EBAY_CLIENT_SECRET}`).toString("base64");
+  const res = await fetch(EBAY_AUTH_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": `Basic ${credentials}`,
+    },
+    body: "grant_type=client_credentials&scope=https://api.ebay.com/oauth/api_scope",
+  });
+
+  if (!res.ok) {
+    console.error("[SPRITZFIND] eBay auth error:", res.status, await res.text());
+    return null;
+  }
+
+  const data = await res.json();
+  ebayToken = data.access_token;
+  ebayTokenExpiry = Date.now() + (data.expires_in * 1000);
+  console.log("[SPRITZFIND] eBay token acquired, expires in", data.expires_in, "s");
+  return ebayToken;
+}
+
+async function searchEbay(query, limit = 3) {
+  try {
+    const token = await getEbayToken();
+    if (!token) return [];
+
+    const params = new URLSearchParams({
+      q: query,
+      category_ids: "180345",
+      limit: String(limit),
+      sort: "price",
+      filter: "conditionIds:{1000|1500|2000|2500},deliveryCountry:US,price:[5..],priceCurrency:USD,buyingOptions:{FIXED_PRICE}",
+    });
+
+    const res = await fetch(`${EBAY_BROWSE_URL}?${params.toString()}`, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "X-EBAY-C-MARKETPLACE-ID": "EBAY_US",
+      },
+    });
+
+    if (!res.ok) {
+      console.error("[SPRITZFIND] eBay search error:", res.status);
+      return [];
+    }
+
+    const data = await res.json();
+    return (data.itemSummaries || []).map(item => ({
+      price: item.price ? parseFloat(item.price.value) : null,
+      url: item.itemWebUrl || null,
+      title: item.title || "",
+      authenticity: item.authenticityVerification?.status === "PASSED",
+    })).filter(i => i.price && i.price > 5);
+  } catch (err) {
+    console.error("[SPRITZFIND] eBay search failed:", err.message);
+    return [];
+  }
+}
+
+// ===== Price Links Builder =====
+
+// Detect store name from a purchase URL
+function storeFromUrl(url) {
+  if (!url) return null;
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    if (host.includes("fragrancex")) return "FragranceX";
+    if (host.includes("fragrancenet")) return "FragranceNet";
+    if (host.includes("sephora")) return "Sephora";
+    if (host.includes("ulta")) return "Ulta";
+    if (host.includes("nordstrom")) return "Nordstrom";
+    if (host.includes("macys")) return "Macy's";
+    if (host.includes("amazon")) return "Amazon";
+    if (host.includes("ebay")) return "eBay";
+    if (host.includes("jomalone")) return "Jo Malone";
+    if (host.includes("bloomingdales")) return "Bloomingdale's";
+    if (host.includes("neimanmarcus")) return "Neiman Marcus";
+    return host.replace("www.", "").split(".")[0];
+  } catch(e) { return null; }
+}
+
+// Extract bottle size from fragrance name (e.g. "100ml", "3.4 oz", "50 ml")
+function extractSize(name) {
+  if (!name) return null;
+  // Match patterns like "100ml", "3.4oz", "50 ml", "3.4 oz", "100 ml", "1.7oz"
+  const mlMatch = name.match(/(\d+(?:\.\d+)?)\s*ml\b/i);
+  if (mlMatch) {
+    const ml = parseFloat(mlMatch[1]);
+    const oz = (ml / 29.5735).toFixed(1);
+    return `${ml}ml / ${oz} oz`;
+  }
+  const ozMatch = name.match(/(\d+(?:\.\d+)?)\s*oz\b/i);
+  if (ozMatch) {
+    const oz = parseFloat(ozMatch[1]);
+    const ml = Math.round(oz * 29.5735);
+    return `${oz} oz / ${ml}ml`;
+  }
+  return null;
+}
+
+// Clean fragrance name — remove size, concentration suffixes, and "for men/women"
+function cleanName(name) {
+  if (!name) return name;
+  return name
+    .replace(/\s*\d+(?:\.\d+)?\s*(?:ml|oz)\b/gi, "")
+    .replace(/\s*(edt|edp|eau de toilette|eau de parfum|parfum|cologne)\s*$/i, "")
+    .trim();
+}
+
+function buildPriceLinks(fragrance, ebayResults) {
   const name = fragrance.Name || "";
   const brand = fragrance.Brand || "";
   const query = encodeURIComponent(`${brand} ${name}`.trim());
-  
   const prices = [];
-  
-  // If Fragella provides a price, use it as reference
-  if (fragrance.Price) {
+
+  // eBay — REAL prices from Browse API
+  if (ebayResults && ebayResults.length > 0) {
+    const best = ebayResults[0];
     prices.push({
-      store: "Best Available",
-      storeId: "fragrancex",
-      price: `$${parseFloat(fragrance.Price).toFixed(0)}`,
-      url: fragrance["Purchase URL"] || `https://www.fragrancex.com/search?q=${query}`,
+      store: best.authenticity ? "eBay ✓" : "eBay",
+      storeId: "ebay",
+      price: `$${Math.round(best.price)}`,
+      url: best.url || `https://www.ebay.com/sch/i.html?_nkw=${query}&_sacat=180345`,
+    });
+    if (ebayResults.length > 1 && Math.round(ebayResults[1].price) !== Math.round(best.price)) {
+      prices.push({
+        store: ebayResults[1].authenticity ? "eBay #2 ✓" : "eBay #2",
+        storeId: "ebay",
+        price: `$${Math.round(ebayResults[1].price)}`,
+        url: ebayResults[1].url || `https://www.ebay.com/sch/i.html?_nkw=${query}&_sacat=180345`,
+      });
+    }
+  } else {
+    prices.push({
+      store: "eBay", storeId: "ebay", price: "Check Price",
+      url: `https://www.ebay.com/sch/i.html?_nkw=${query}&_sacat=180345`,
     });
   }
 
-  // Amazon search link with affiliate tag
-  prices.push({
-    store: "Amazon",
-    storeId: "amazon",
-    price: "Check Price",
-    url: `https://www.amazon.com/s?k=${query}&tag=spritzfind-20`,
-  });
-
-  // eBay search link
-  prices.push({
-    store: "eBay",
-    storeId: "ebay",
-    price: "Check Price",
-    url: `https://www.ebay.com/sch/i.html?_nkw=${query}&_sacat=180345`,
-  });
-
-  // Sephora search link
-  prices.push({
-    store: "Sephora",
-    storeId: "sephora",
-    price: "Check Price",
-    url: `https://www.sephora.com/search?keyword=${query}`,
-  });
-
-  // Ulta search link
-  prices.push({
-    store: "Ulta",
-    storeId: "ulta",
-    price: "Check Price",
-    url: `https://www.ulta.com/ulta/a/_/Ntt-${query}`,
-  });
-
-  // FragranceX search link
-  prices.push({
-    store: "FragranceX",
-    storeId: "fragrancex",
-    price: "Check Price",
-    url: `https://www.fragrancex.com/search?q=${query}`,
-  });
-
-  // FragranceNet search link
-  prices.push({
-    store: "FragranceNet",
-    storeId: "fragrancenet",
-    price: "Check Price",
-    url: `https://www.fragrancenet.com/search?q=${query}`,
-  });
-
-  // Nordstrom search link
-  prices.push({
-    store: "Nordstrom",
-    storeId: "nordstrom",
-    price: "Check Price",
-    url: `https://www.nordstrom.com/sr?keyword=${query}`,
-  });
-
-  // Macy's search link
-  prices.push({
-    store: "Macy's",
-    storeId: "macys",
-    price: "Check Price",
-    url: `https://www.macys.com/shop/featured/${query}`,
-  });
+  // Amazon with affiliate tag
+  prices.push({ store: "Amazon", storeId: "amazon", price: "Check Price", url: `https://www.amazon.com/s?k=${query}&tag=spritzfind-20` });
 
   return prices;
 }
 
-// Convert Fragella response to SpritzFind card format
-function formatFragrance(f) {
-  // Determine badge
+// ===== Format Fragrance =====
+function formatFragrance(f, ebayResults) {
   let badge = "trending";
   if (f.Popularity === "Very high" || f.Popularity === "High") badge = "trending";
   else if (f["Price Value"] === "good_value" || f["Price Value"] === "great_value") badge = "deal";
   else if (f.Popularity === "Niche" || f.Popularity === "Low") badge = "luxury";
 
-  // Popularity score
   const popMap = { "Very high": 97, "High": 88, "Medium": 72, "Low": 55, "Niche": 45 };
   const popularity = popMap[f.Popularity] || 60;
 
-  // Build notes string
   const topNotes = (f.Notes?.Top || []).map(n => n.name).slice(0, 3).join(", ");
   const midNotes = (f.Notes?.Middle || []).map(n => n.name).slice(0, 2).join(", ");
   const baseNotes = (f.Notes?.Base || []).map(n => n.name).slice(0, 2).join(", ");
   const notesSummary = [topNotes, midNotes, baseNotes].filter(Boolean).join(" · ");
 
-  // Build slug
-  const slug = (f.Name || "")
-    .toLowerCase()
-    .replace(/['']/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+  const slug = (f.Name || "").toLowerCase().replace(/['']/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
   return {
     brand: f.Brand || "Unknown",
-    name: f.Name || "Unknown",
-    size: f.OilType || "Eau de Parfum",
-    retail: f.Price ? `$${parseFloat(f.Price).toFixed(0)}` : null,
+    name: cleanName(f.Name) || f.Name || "Unknown",
+    size: f.OilType || null,
+    bottleSize: extractSize(f.Name || "") || null,
+    retail: (f.Price && parseFloat(f.Price) >= 10 && parseFloat(f.Price) <= 800) ? `$${parseFloat(f.Price).toFixed(0)}` : null,
     notes: notesSummary || null,
-    badge: badge,
-    popularity: popularity,
+    badge, popularity,
     image: f["Image URL"] || null,
     imageFallbacks: f["Image Fallbacks"] || [],
-    source: "Fragella",
-    slug: slug,
-    gender: f.Gender || null,
-    year: f.Year || null,
-    country: f.Country || null,
-    rating: f.rating || null,
-    longevity: f.Longevity || null,
-    sillage: f.Sillage || null,
-    priceValue: f["Price Value"] || null,
-    confidence: f.Confidence || null,
-    accords: f["Main Accords"] || [],
-    accordPercentages: f["Main Accords Percentage"] || {},
-    seasonRanking: f["Season Ranking"] || [],
-    occasionRanking: f["Occasion Ranking"] || [],
-    generalNotes: f["General Notes"] || [],
-    notesDetail: f.Notes || {},
+    source: "Fragella" + (ebayResults && ebayResults.length > 0 ? " + eBay" : ""),
+    slug, gender: f.Gender || null, year: f.Year || null, country: f.Country || null,
+    rating: f.rating || null, longevity: f.Longevity || null, sillage: f.Sillage || null,
+    priceValue: f["Price Value"] || null, confidence: f.Confidence || null,
+    accords: f["Main Accords"] || [], accordPercentages: f["Main Accords Percentage"] || {},
+    seasonRanking: f["Season Ranking"] || [], occasionRanking: f["Occasion Ranking"] || [],
+    generalNotes: f["General Notes"] || [], notesDetail: f.Notes || {},
     purchaseUrl: f["Purchase URL"] || null,
-    prices: buildPriceLinks(f),
+    prices: buildPriceLinks(f, ebayResults),
   };
 }
 
+// ===== Batch eBay enrichment =====
+async function enrichWithEbay(fragrances) {
+  // Fetch eBay prices in parallel — limit to first 10 to stay within rate limits
+  const batch = fragrances.slice(0, 10);
+  const ebayPromises = batch.map(f => {
+    const q = `${f.Brand || ""} ${f.Name || ""}`.trim();
+    return searchEbay(q, 3).catch(() => []);
+  });
+
+  const ebayResults = await Promise.all(ebayPromises);
+
+  return fragrances.map((f, i) => {
+    const ebay = i < ebayResults.length ? ebayResults[i] : [];
+    return formatFragrance(f, ebay);
+  });
+}
+
+// ===== Fragella API =====
 async function callFragella(endpoint, params = {}) {
   const url = new URL(`${FRAGELLA_BASE}${endpoint}`);
   Object.entries(params).forEach(([k, v]) => {
     if (v !== undefined && v !== null) url.searchParams.set(k, v);
   });
-
-  console.log(`[SPRITZFIND] Fragella request: ${url.toString()}`);
-
-  const res = await fetch(url.toString(), {
-    headers: { "x-api-key": FRAGELLA_KEY },
-  });
-
+  console.log(`[SPRITZFIND] Fragella: ${url.toString()}`);
+  const res = await fetch(url.toString(), { headers: { "x-api-key": FRAGELLA_KEY } });
   if (!res.ok) {
     const errText = await res.text();
     console.error(`[SPRITZFIND] Fragella error ${res.status}: ${errText}`);
     throw new Error(`Fragella API error: ${res.status}`);
   }
-
   return res.json();
 }
 
+// ===== Main Handler =====
 exports.handler = async function (event) {
-  // Handle CORS preflight
-  if (event.httpMethod === "OPTIONS") {
-    return { statusCode: 200, headers: HEADERS, body: "" };
-  }
-
-  if (event.httpMethod !== "POST") {
-    return { statusCode: 405, headers: HEADERS, body: JSON.stringify({ error: "Method not allowed" }) };
-  }
+  if (event.httpMethod === "OPTIONS") return { statusCode: 200, headers: HEADERS, body: "" };
+  if (event.httpMethod !== "POST") return { statusCode: 405, headers: HEADERS, body: JSON.stringify({ error: "Method not allowed" }) };
 
   let body;
-  try {
-    body = JSON.parse(event.body);
-  } catch (e) {
+  try { body = JSON.parse(event.body); } catch (e) {
     return { statusCode: 400, headers: HEADERS, body: JSON.stringify({ error: "Invalid JSON" }) };
   }
 
@@ -195,96 +257,65 @@ exports.handler = async function (event) {
     let data;
 
     if (action === "search" && query) {
-      // Fuzzy search fragrances — try to get full limit
       const raw = await callFragella("/fragrances", { search: query, limit });
       let results = Array.isArray(raw) ? raw : [];
-      
-      // If API returned fewer than requested and we got exactly 20, it might be capped
-      // Try a second search with a slightly different query to get more
       if (results.length > 0 && results.length < limit && results.length === 20) {
         try {
           const raw2 = await callFragella("/fragrances", { search: query + " eau", limit: 30 });
           const items2 = Array.isArray(raw2) ? raw2 : [];
           const seen = new Set(results.map(r => (r.Name || "").toLowerCase()));
           for (const item of items2) {
-            if (!seen.has((item.Name || "").toLowerCase())) {
-              results.push(item);
-              seen.add((item.Name || "").toLowerCase());
-            }
+            if (!seen.has((item.Name || "").toLowerCase())) { results.push(item); seen.add((item.Name || "").toLowerCase()); }
             if (results.length >= limit) break;
           }
-        } catch (e) { /* ignore supplemental search failure */ }
+        } catch (e) {}
       }
-      
-      data = results.map(formatFragrance);
+      data = await enrichWithEbay(results);
 
     } else if (action === "brand" && brand) {
-      // Get all fragrances for a brand
       const raw = await callFragella(`/brands/${encodeURIComponent(brand)}`, { limit });
       let results = Array.isArray(raw) ? raw : [];
-      
-      // If capped at 20, supplement with a search
       if (results.length > 0 && results.length < limit && results.length === 20) {
         try {
           const raw2 = await callFragella("/fragrances", { search: brand, limit: 30 });
           const items2 = Array.isArray(raw2) ? raw2 : [];
           const seen = new Set(results.map(r => (r.Name || "").toLowerCase()));
           for (const item of items2) {
-            if (!seen.has((item.Name || "").toLowerCase())) {
-              results.push(item);
-              seen.add((item.Name || "").toLowerCase());
-            }
+            if (!seen.has((item.Name || "").toLowerCase())) { results.push(item); seen.add((item.Name || "").toLowerCase()); }
             if (results.length >= limit) break;
           }
-        } catch (e) { /* ignore */ }
+        } catch (e) {}
       }
-      
-      data = results.map(formatFragrance);
+      data = await enrichWithEbay(results);
 
     } else if (action === "similar" && name) {
-      // Find similar fragrances
       const raw = await callFragella("/fragrances/similar", { name, limit });
       if (raw && raw.similar_fragrances) {
-        data = raw.similar_fragrances.map(f => ({
-          ...formatFragrance(f),
-          similarityScore: f.SimilarityScore || null,
-        }));
-      } else {
-        data = [];
-      }
+        const enriched = await enrichWithEbay(raw.similar_fragrances);
+        data = enriched.map((f, i) => ({ ...f, similarityScore: raw.similar_fragrances[i]?.SimilarityScore || null }));
+      } else { data = []; }
 
     } else if (action === "trending") {
-      // Get popular fragrances — combine multiple popular searches
       const searches = ["Dior Sauvage", "Chanel", "Tom Ford", "Creed Aventus", "Versace"];
       const allResults = [];
       const seen = new Set();
-      
       for (const term of searches) {
         if (allResults.length >= limit) break;
         try {
           const raw = await callFragella("/fragrances", { search: term, limit: 20 });
-          const items = Array.isArray(raw) ? raw : [];
-          for (const item of items) {
+          for (const item of (Array.isArray(raw) ? raw : [])) {
             const key = (item.Name || "").toLowerCase();
-            if (!seen.has(key)) {
-              seen.add(key);
-              allResults.push(item);
-            }
+            if (!seen.has(key)) { seen.add(key); allResults.push(item); }
             if (allResults.length >= limit) break;
           }
-        } catch (e) {
-          console.error(`[SPRITZFIND] Trending search "${term}" failed:`, e.message);
-        }
+        } catch (e) { console.error(`[SPRITZFIND] Trending "${term}" failed:`, e.message); }
       }
-      data = allResults.map(formatFragrance);
+      data = await enrichWithEbay(allResults);
 
     } else if (action === "notes" && query) {
-      // Search notes
-      const raw = await callFragella("/notes", { search: query, limit });
-      data = raw;
+      data = await callFragella("/notes", { search: query, limit });
 
     } else if (action === "match") {
-      // Trait match — find fragrances by accords/notes
       const params = {};
       if (body.accords) params.accords = body.accords;
       if (body.top) params.top = body.top;
@@ -292,28 +323,16 @@ exports.handler = async function (event) {
       if (body.base) params.base = body.base;
       params.limit = limit;
       const raw = await callFragella("/fragrances/match", params);
-      data = (Array.isArray(raw) ? raw : []).map(formatFragrance);
+      data = await enrichWithEbay(Array.isArray(raw) ? raw : []);
 
     } else {
-      return {
-        statusCode: 400,
-        headers: HEADERS,
-        body: JSON.stringify({ error: "Invalid action. Use: search, brand, similar, trending, notes, match" }),
-      };
+      return { statusCode: 400, headers: HEADERS, body: JSON.stringify({ error: "Invalid action" }) };
     }
 
-    return {
-      statusCode: 200,
-      headers: HEADERS,
-      body: JSON.stringify({ data, count: data?.length || 0 }),
-    };
+    return { statusCode: 200, headers: HEADERS, body: JSON.stringify({ data, count: data?.length || 0 }) };
 
   } catch (err) {
-    console.error("[SPRITZFIND] API error:", err.message);
-    return {
-      statusCode: 500,
-      headers: HEADERS,
-      body: JSON.stringify({ error: err.message }),
-    };
+    console.error("[SPRITZFIND] Error:", err.message);
+    return { statusCode: 500, headers: HEADERS, body: JSON.stringify({ error: err.message }) };
   }
 };
