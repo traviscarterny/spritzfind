@@ -136,34 +136,34 @@ function cleanName(name) {
 function buildPriceLinks(fragrance, ebayResults) {
   const name = fragrance.Name || "";
   const brand = fragrance.Brand || "";
-  const query = encodeURIComponent(`${brand} ${name}`.trim());
+  const fullName = `${brand} ${name}`.trim();
+  // Clean query — remove "for men", "for women", "unisex", concentration types for better search
+  const cleanQuery = fullName
+    .replace(/\b(for (men|women|him|her)|unisex|eau de (parfum|toilette|cologne)|edp|edt|parfum|cologne)\b/gi, "")
+    .replace(/\s+/g, " ").trim();
+  const query = encodeURIComponent(cleanQuery);
   const prices = [];
 
-  // eBay — REAL prices from Browse API
+  // eBay search URL — always links to search results, never individual items
+  const ebaySearchUrl = `https://www.ebay.com/sch/i.html?_nkw=${query}&_sacat=180345&_sop=15&LH_BIN=1&LH_ItemCondition=1000%7C1500`;
+
+  // eBay — show real price from Browse API but link to search
   if (ebayResults && ebayResults.length > 0) {
     const best = ebayResults[0];
     prices.push({
       store: best.authenticity ? "eBay ✓" : "eBay",
       storeId: "ebay",
       price: `$${Math.round(best.price)}`,
-      url: best.url || `https://www.ebay.com/sch/i.html?_nkw=${query}&_sacat=180345`,
+      url: ebaySearchUrl,
     });
-    if (ebayResults.length > 1 && Math.round(ebayResults[1].price) !== Math.round(best.price)) {
-      prices.push({
-        store: ebayResults[1].authenticity ? "eBay #2 ✓" : "eBay #2",
-        storeId: "ebay",
-        price: `$${Math.round(ebayResults[1].price)}`,
-        url: ebayResults[1].url || `https://www.ebay.com/sch/i.html?_nkw=${query}&_sacat=180345`,
-      });
-    }
   } else {
     prices.push({
       store: "eBay", storeId: "ebay", price: "Check Price",
-      url: `https://www.ebay.com/sch/i.html?_nkw=${query}&_sacat=180345`,
+      url: ebaySearchUrl,
     });
   }
 
-  // Amazon with affiliate tag
+  // Amazon search with affiliate tag
   prices.push({ store: "Amazon", storeId: "amazon", price: "Check Price", url: `https://www.amazon.com/s?k=${query}&tag=spritzfind-20` });
 
   return prices;
