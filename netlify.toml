@@ -33,6 +33,11 @@
   status = 200
 
 [[redirects]]
+  from = "/blog/best-fragrances-under-100"
+  to = "/blog/best-fragrances-under-100.html"
+  status = 200
+
+[[redirects]]
   from = "/blog/dior-sauvage-vs-bleu-de-chanel"
   to = "/blog/dior-sauvage-vs-bleu-de-chanel.html"
   status = 200
@@ -43,26 +48,36 @@
   status = 200
 
 [[redirects]]
-  from = "/blog/best-fall-fragrances-2026"
-  to = "/blog/best-fall-fragrances-2026.html"
+  from = "/blog/how-to-spot-fake-fragrance"
+  to = "/blog/how-to-spot-fake-fragrance.html"
   status = 200
 
 [[redirects]]
-  from = "/blog/fragrance-price-comparison-guide"
-  to = "/blog/fragrance-price-comparison-guide.html"
+  from = "/blog/fragrancex-vs-fragrancenet"
+  to = "/blog/fragrancex-vs-fragrancenet.html"
   status = 200
 
 [[redirects]]
-  from = "/blog/best-niche-fragrances-beginners"
-  to = "/blog/best-niche-fragrances-beginners.html"
+  from = "/blog/how-to-make-cologne-last"
+  to = "/blog/how-to-make-cologne-last.html"
   status = 200
 
 [[redirects]]
-  from = "/blog/creed-aventus-dupes"
-  to = "/blog/creed-aventus-dupes.html"
+  from = "/blog/tom-ford-fragrance-guide"
+  to = "/blog/tom-ford-fragrance-guide.html"
   status = 200
 
 [[redirects]]
-  from = "/blog/how-to-make-cologne-last-longer"
-  to = "/blog/how-to-make-cologne-last-longer.html"
+  from = "/blog/creed-aventus-worth-it"
+  to = "/blog/creed-aventus-worth-it.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/best-fall-winter-fragrances"
+  to = "/blog/best-fall-winter-fragrances.html"
+  status = 200
+
+[[redirects]]
+  from = "/blog/best-designer-fragrances-2026"
+  to = "/blog/best-designer-fragrances-2026.html"
   status = 200
